@@ -1,0 +1,27 @@
+The string "df:talk?jid=bf@fb." is not acceptable
+The string "df:talk?jid=bf@fb.s" is acceptable
+The string "df:talk?jid=bf@fb.sd" is acceptable
+The string "df:talk?jid=bf@f34b.sds" is acceptable
+The string "df:chat?jid=bf@fb.sdss" is acceptable
+The string "df:talk?jid=bf@fbd.sdsss" is not acceptable
+The string "df:talk?jid=bf@fbd.sdssss" is not acceptable
+The string "df:talk?jid=ddbtf@fbd.sd2" is not acceptable
+The string "df:talk?jid=bf@fbd.s3d" is not acceptable
+The string "df:talk?jid=bf@fbd.sdsdvsdv" is not acceptable
+The string "df:talk?jid=b46f@fbd.sd" is acceptable
+The string "df:tatk?jid=bf@fbc.sd" is not acceptable
+The string "df:chat?jid=bf@fbc.sd" is acceptable
+The string "df:cqat?jid=bf@fbw.sd" is not acceptable
+The string "d.f:talk?jid=bf@fbw.sd" is not acceptable
+The string "df:talk?jid=bf@fbw.sd" is acceptable
+The string "df:talk?jid=bf@fbw.sdsdvsdv" is not acceptable
+The string "df:talk?jid=bf@fbw.sd" is acceptable
+The string "df:talk?jid=bf@fbe.sd" is acceptable
+The string "df:talk?jid=bf@fbe.sd3" is not acceptable
+
+f34b - 1
+fb - 3
+fbc - 1
+fbd - 1
+fbe - 1
+fbw - 2
