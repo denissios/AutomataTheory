@@ -67,7 +67,9 @@ public:
     virtual void letter_l(AppClassContext& context);
     virtual void letter_point(AppClassContext& context);
     virtual void letter_question(AppClassContext& context);
+    virtual void letter_space(AppClassContext& context);
     virtual void letter_t(AppClassContext& context);
+    virtual void letter_tab(AppClassContext& context);
     virtual void other(AppClassContext& context);
 
 protected:
@@ -133,7 +135,9 @@ public:
     virtual void letter_l(AppClassContext& context);
     virtual void letter_point(AppClassContext& context);
     virtual void letter_question(AppClassContext& context);
+    virtual void letter_space(AppClassContext& context);
     virtual void letter_t(AppClassContext& context);
+    virtual void letter_tab(AppClassContext& context);
     virtual void other(AppClassContext& context);
 };
 
@@ -159,7 +163,9 @@ public:
     virtual void letter_l(AppClassContext& context);
     virtual void letter_point(AppClassContext& context);
     virtual void letter_question(AppClassContext& context);
+    virtual void letter_space(AppClassContext& context);
     virtual void letter_t(AppClassContext& context);
+    virtual void letter_tab(AppClassContext& context);
     virtual void other(AppClassContext& context);
 };
 
@@ -183,7 +189,9 @@ public:
     virtual void letter_k(AppClassContext& context);
     virtual void letter_l(AppClassContext& context);
     virtual void letter_question(AppClassContext& context);
+    virtual void letter_space(AppClassContext& context);
     virtual void letter_t(AppClassContext& context);
+    virtual void letter_tab(AppClassContext& context);
     virtual void other(AppClassContext& context);
 };
 
@@ -207,7 +215,9 @@ public:
     virtual void letter_k(AppClassContext& context);
     virtual void letter_l(AppClassContext& context);
     virtual void letter_question(AppClassContext& context);
+    virtual void letter_space(AppClassContext& context);
     virtual void letter_t(AppClassContext& context);
+    virtual void letter_tab(AppClassContext& context);
     virtual void other(AppClassContext& context);
 };
 
@@ -231,7 +241,9 @@ public:
     virtual void letter_k(AppClassContext& context);
     virtual void letter_l(AppClassContext& context);
     virtual void letter_question(AppClassContext& context);
+    virtual void letter_space(AppClassContext& context);
     virtual void letter_t(AppClassContext& context);
+    virtual void letter_tab(AppClassContext& context);
     virtual void other(AppClassContext& context);
 };
 
@@ -255,7 +267,9 @@ public:
     virtual void letter_k(AppClassContext& context);
     virtual void letter_l(AppClassContext& context);
     virtual void letter_question(AppClassContext& context);
+    virtual void letter_space(AppClassContext& context);
     virtual void letter_t(AppClassContext& context);
+    virtual void letter_tab(AppClassContext& context);
     virtual void other(AppClassContext& context);
 };
 
@@ -279,7 +293,9 @@ public:
     virtual void letter_k(AppClassContext& context);
     virtual void letter_l(AppClassContext& context);
     virtual void letter_question(AppClassContext& context);
+    virtual void letter_space(AppClassContext& context);
     virtual void letter_t(AppClassContext& context);
+    virtual void letter_tab(AppClassContext& context);
     virtual void other(AppClassContext& context);
 };
 
@@ -303,7 +319,9 @@ public:
     virtual void letter_k(AppClassContext& context);
     virtual void letter_l(AppClassContext& context);
     virtual void letter_question(AppClassContext& context);
+    virtual void letter_space(AppClassContext& context);
     virtual void letter_t(AppClassContext& context);
+    virtual void letter_tab(AppClassContext& context);
     virtual void other(AppClassContext& context);
 };
 
@@ -327,7 +345,9 @@ public:
     virtual void letter_k(AppClassContext& context);
     virtual void letter_l(AppClassContext& context);
     virtual void letter_question(AppClassContext& context);
+    virtual void letter_space(AppClassContext& context);
     virtual void letter_t(AppClassContext& context);
+    virtual void letter_tab(AppClassContext& context);
     virtual void other(AppClassContext& context);
 };
 
@@ -351,7 +371,9 @@ public:
     virtual void letter_k(AppClassContext& context);
     virtual void letter_l(AppClassContext& context);
     virtual void letter_question(AppClassContext& context);
+    virtual void letter_space(AppClassContext& context);
     virtual void letter_t(AppClassContext& context);
+    virtual void letter_tab(AppClassContext& context);
     virtual void other(AppClassContext& context);
 };
 
@@ -375,7 +397,9 @@ public:
     virtual void letter_k(AppClassContext& context);
     virtual void letter_l(AppClassContext& context);
     virtual void letter_question(AppClassContext& context);
+    virtual void letter_space(AppClassContext& context);
     virtual void letter_t(AppClassContext& context);
+    virtual void letter_tab(AppClassContext& context);
     virtual void other(AppClassContext& context);
 };
 
@@ -629,9 +653,19 @@ public:
         getState().letter_question(*this);
     };
 
+    inline void letter_space()
+    {
+        getState().letter_space(*this);
+    };
+
     inline void letter_t()
     {
         getState().letter_t(*this);
+    };
+
+    inline void letter_tab()
+    {
+        getState().letter_tab(*this);
     };
 
     inline void other()

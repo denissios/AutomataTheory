@@ -49,22 +49,24 @@
 // State		Transition									End State		Action(s)
 Start
 {
-			other												gtalk			{}
-			letter_l											gtalk			{}
-			letter_k											gtalk			{}
-			letter_c											gtalk			{}
-			letter_h											gtalk			{}
-			letter_a											gtalk			{}
-			letter_t											gtalk			{}
-			letter_j											gtalk			{}
-			letter_i											gtalk			{}
-			letter_d											gtalk			{}
+			other												gtalk			{reset();}
+			letter_l											gtalk			{reset();}
+			letter_k											gtalk			{reset();}
+			letter_c											gtalk			{reset();}
+			letter_h											gtalk			{reset();}
+			letter_a											gtalk			{reset();}
+			letter_t											gtalk			{reset();}
+			letter_j											gtalk			{reset();}
+			letter_i											gtalk			{reset();}
+			letter_d											gtalk			{reset();}
+			letter_space										Error			{}
+			letter_tab											Error			{}
 			letter_question										Error			{}
 			letter_equals										Error			{}
 			letter_colon										Error			{}
 			letter_at											Error			{}
 			letter_point										Error			{}
-			EOS													Error			{}
+			EOS													Start			{Unacceptable();}
 }
 
 gtalk
@@ -79,12 +81,14 @@ gtalk
 			letter_j											gtalk			{}
 			letter_i											gtalk			{}
 			letter_d											gtalk			{}
+			letter_space										Error			{}
+			letter_tab											Error			{}
 			letter_question										Error			{}
 			letter_equals										Error			{}
 			letter_colon										question		{}
 			letter_at											Error			{}
 			letter_point										Error			{}
-			EOS													Error			{}
+			EOS													Start			{Unacceptable();}
 }
 
 question
@@ -100,9 +104,11 @@ question
 			letter_j											Error			{}
 			letter_i											Error			{}
 			letter_d											Error			{}
+			letter_space										Error			{}
+			letter_tab											Error			{}
 			letter_equals										Error			{}
 			letter_colon										Error			{}
-			EOS													Error			{}
+			EOS													Start			{Unacceptable();}
 }
 
 tORc
@@ -118,9 +124,11 @@ tORc
 			letter_j											Error			{}
 			letter_i											Error			{}
 			letter_d											Error			{}
+			letter_space										Error			{}
+			letter_tab											Error			{}
 			letter_equals										Error			{}
 			letter_colon										Error			{}
-			EOS													Error			{}
+			EOS													Start			{Unacceptable();}
 }
 
 aORh
@@ -136,9 +144,11 @@ aORh
 			letter_j											Error			{}
 			letter_i											Error			{}
 			letter_d											Error			{}
+			letter_space										Error			{}
+			letter_tab											Error			{}
 			letter_equals										Error			{}
 			letter_colon										Error			{}
-			EOS													Error			{}
+			EOS													Start			{Unacceptable();}
 }
 
 lORa
@@ -154,9 +164,11 @@ lORa
 			letter_j											Error			{}
 			letter_i											Error			{}
 			letter_d											Error			{}
+			letter_space										Error			{}
+			letter_tab											Error			{}
 			letter_equals										Error			{}
 			letter_colon										Error			{}
-			EOS													Error			{}
+			EOS													Start			{Unacceptable();}
 }
 
 kORt
@@ -172,9 +184,11 @@ kORt
 			letter_j											Error			{}
 			letter_i											Error			{}
 			letter_d											Error			{}
+			letter_space										Error			{}
+			letter_tab											Error			{}
 			letter_equals										Error			{}
 			letter_colon										Error			{}
-			EOS													Error			{}
+			EOS													Start			{Unacceptable();}
 }
 
 j
@@ -190,9 +204,11 @@ j
 			letter_j											i				{}
 			letter_i											Error			{}
 			letter_d											Error			{}
+			letter_space										Error			{}
+			letter_tab											Error			{}
 			letter_equals										Error			{}
 			letter_colon										Error			{}
-			EOS													Error			{}
+			EOS													Start			{Unacceptable();}
 }
 
 i
@@ -208,9 +224,11 @@ i
 			letter_j											Error			{}
 			letter_i											d				{}
 			letter_d											Error			{}
+			letter_space										Error			{}
+			letter_tab											Error			{}
 			letter_equals										Error			{}
 			letter_colon										Error			{}
-			EOS													Error			{}
+			EOS													Start			{Unacceptable();}
 }
 
 d
@@ -226,9 +244,11 @@ d
 			letter_j											Error			{}
 			letter_i											Error			{}
 			letter_d											equals			{}
+			letter_space										Error			{}
+			letter_tab											Error			{}
 			letter_equals										Error			{}
 			letter_colon										Error			{}
-			EOS													Error			{}
+			EOS													Start			{Unacceptable();}
 }
 
 equals
@@ -244,9 +264,11 @@ equals
 			letter_j											Error			{}
 			letter_i											Error			{}
 			letter_d											Error			{}
+			letter_space										Error			{}
+			letter_tab											Error			{}
 			letter_equals										at				{}
 			letter_colon										Error			{}
-			EOS													Error			{}
+			EOS													Start			{Unacceptable();}
 }
 
 at
@@ -254,7 +276,7 @@ at
 			other												Error			{}
 			a_zAND0_9(ch: char&)								user			{}
 			a_z(ch: char&)										user			{}
-			EOS													Error			{}
+			EOS													Start			{Unacceptable();}
 			letter_at											Error			{}
 			letter_point										Error			{}
 }
@@ -264,7 +286,7 @@ user
 			other												Error			{}
 			a_zAND0_9(ch: char&)								user			{}
 			a_z(ch: char&)										user			{}
-			EOS													Error			{}
+			EOS													Start			{Unacceptable();}
 			letter_at											point			{}
 			letter_point										Error			{}
 }
@@ -274,7 +296,7 @@ point
 			other												Error			{}
 			a_zAND0_9(ch: char&)								server			{addServerSymbol(ch);}
 			a_z(ch: char&)										server			{addServerSymbol(ch);}
-			EOS													Error			{}
+			EOS													Start			{Unacceptable();}
 			letter_at											Error			{}
 			letter_point										Error			{}
 }
@@ -284,7 +306,7 @@ server
 			other												Error			{}
 			a_zAND0_9(ch: char&)								server			{addServerSymbol(ch);}
 			a_z(ch: char&)										server			{addServerSymbol(ch);}
-			EOS													Error			{}
+			EOS													Start			{Unacceptable();}
 			letter_at											Error			{}
 			letter_point										eos				{}
 }
@@ -294,7 +316,7 @@ eos
 			other												Error			{}
 			a_zAND0_9(ch: char&)								Error			{}
 			a_z(ch: char&)										zone			{addZoneSymbol(ch);}
-			EOS													Error			{}
+			EOS													Start			{Unacceptable();}
 			letter_at											Error			{}
 			letter_point										Error			{}
 }
@@ -305,7 +327,7 @@ zone
 			a_zAND0_9(ch: char&)								Error			{}
 			a_z(ch: char&) [ctxt.getZone().isCorrect()]			zone			{addZoneSymbol(ch);}
 			a_z(ch: char&)										Error			{}
-			EOS													OK				{Acceptable();}
+			EOS													Start			{Acceptable();}
 			letter_at											Error			{}
 			letter_point										Error			{}
 }
@@ -332,7 +354,7 @@ Error
 			letter_point										nil				{}
 			a_zAND0_9(ch: char&)								nil				{}
 			a_z(ch: char&)										nil				{}
-			EOS													nil				{Unacceptable();}
+			EOS													Start			{Unacceptable();}
 }
 
 %%

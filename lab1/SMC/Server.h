@@ -9,6 +9,7 @@ private:
 
 public:
     Server() { str = ""; }
+    inline void reset() { str = ""; }
     inline void addSymbol(const char ch) { str += ch; }
     inline std::string getStr() { return str; }
 

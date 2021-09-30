@@ -24,9 +24,6 @@
     <ClCompile Include="Zone.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Server.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="AppClass_sm.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>

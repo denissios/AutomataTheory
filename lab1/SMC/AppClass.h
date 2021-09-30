@@ -32,6 +32,7 @@ public:
     inline void addZoneSymbol(char ch)   { zone.addSymbol(ch); }
     inline void addServerSymbol(char ch) { server.addSymbol(ch); }
 
+    void reset();
     bool CheckString(std::string, std::map<std::string, size_t>& server_map);
 
     inline void Acceptable()   { isAcceptable = true; };

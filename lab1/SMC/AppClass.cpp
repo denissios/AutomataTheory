@@ -21,6 +21,12 @@ AppClass::AppClass()
 #endif
 }
 
+void AppClass::reset()
+{
+    zone.reset();
+    server.reset();
+}
+
 bool AppClass::CheckString(std::string theString, std::map<std::string, size_t>& server_map)
 {
 #ifdef CRTP
@@ -55,6 +61,14 @@ bool AppClass::CheckString(std::string theString, std::map<std::string, size_t>&
 
             case '.':
                 _fsm.letter_point();
+                break;
+
+            case ' ':
+                _fsm.letter_space();
+                break;
+
+            case '\t':
+                _fsm.letter_tab();
                 break;
             
             case 'T':

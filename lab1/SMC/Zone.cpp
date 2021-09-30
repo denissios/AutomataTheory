@@ -11,3 +11,9 @@ void Zone::addSymbol(const char ch)
 	str += ch;
 	count++;
 }
+
+void Zone::reset()
+{
+	count = 1;
+	str = "";
+}

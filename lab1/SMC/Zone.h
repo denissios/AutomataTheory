@@ -11,6 +11,7 @@ private:
 public:
     Zone();
     void addSymbol(const char ch);
+    void reset();
     [[nodiscard]] inline constexpr bool isCorrect() { return count > 4 ? false : true; }
 
 };
