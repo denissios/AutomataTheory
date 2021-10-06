@@ -49,307 +49,118 @@
 // State		Transition									End State		Action(s)
 Start
 {
-			other												gtalk			{reset();}
-			letter_l											gtalk			{reset();}
-			letter_k											gtalk			{reset();}
-			letter_c											gtalk			{reset();}
-			letter_h											gtalk			{reset();}
-			letter_a											gtalk			{reset();}
-			letter_t											gtalk			{reset();}
-			letter_j											gtalk			{reset();}
-			letter_i											gtalk			{reset();}
-			letter_d											gtalk			{reset();}
-			letter_space										Error			{}
-			letter_tab											Error			{}
-			letter_question										Error			{}
-			letter_equals										Error			{}
-			letter_colon										Error			{}
+			letter_question(ch: char&)							Error			{}
+			letter_equals(ch: char&)							Error			{}
+			letter_colon(ch: char&)								Error			{}
 			letter_at											Error			{}
 			letter_point										Error			{}
+			a_zAND0_9(ch: char&)								Error			{}
+			a_z(ch: char&)										BS			    {reset();addBSSymbol(ch);}
 			EOS													Start			{Unacceptable();}
 }
 
-gtalk
+BS
 {
-			other												gtalk			{}
-			letter_l											gtalk			{}
-			letter_k											gtalk			{}
-			letter_c											gtalk			{}
-			letter_h											gtalk			{}
-			letter_a											gtalk			{}
-			letter_t											gtalk			{}
-			letter_j											gtalk			{}
-			letter_i											gtalk			{}
-			letter_d											gtalk			{}
-			letter_space										Error			{}
-			letter_tab											Error			{}
-			letter_question										Error			{}
-			letter_equals										Error			{}
-			letter_colon										question		{}
+			letter_question(ch: char&)							BS				{addBSSymbol(ch);}
+			letter_equals(ch: char&)							at				{addBSSymbol(ch);}
+			letter_colon(ch: char&)								BS				{addBSSymbol(ch);}
 			letter_at											Error			{}
 			letter_point										Error			{}
-			EOS													Start			{Unacceptable();}
-}
-
-question
-{
-			other												Error			{}
-			letter_t											tORc			{}
-			letter_l											Error			{}
-			letter_k											Error			{}
-			letter_c											tORc			{}
-			letter_h											Error			{}
-			letter_a											Error			{}
-			letter_question										Error			{}
-			letter_j											Error			{}
-			letter_i											Error			{}
-			letter_d											Error			{}
-			letter_space										Error			{}
-			letter_tab											Error			{}
-			letter_equals										Error			{}
-			letter_colon										Error			{}
-			EOS													Start			{Unacceptable();}
-}
-
-tORc
-{
-			other												Error			{}
-			letter_l											Error			{}
-			letter_k											Error			{}
-			letter_c											Error			{}
-			letter_h											aORh			{}
-			letter_a											aORh			{}
-			letter_t											Error			{}
-			letter_question										Error			{}
-			letter_j											Error			{}
-			letter_i											Error			{}
-			letter_d											Error			{}
-			letter_space										Error			{}
-			letter_tab											Error			{}
-			letter_equals										Error			{}
-			letter_colon										Error			{}
-			EOS													Start			{Unacceptable();}
-}
-
-aORh
-{
-			other												Error			{}
-			letter_l											lORa			{}
-			letter_k											Error			{}
-			letter_c											Error			{}
-			letter_h											Error			{}
-			letter_a											lORa			{}
-			letter_t											Error			{}
-			letter_question										Error			{}
-			letter_j											Error			{}
-			letter_i											Error			{}
-			letter_d											Error			{}
-			letter_space										Error			{}
-			letter_tab											Error			{}
-			letter_equals										Error			{}
-			letter_colon										Error			{}
-			EOS													Start			{Unacceptable();}
-}
-
-lORa
-{
-			other												Error			{}
-			letter_l											Error			{}
-			letter_k											kORt			{}
-			letter_c											Error			{}
-			letter_h											Error			{}
-			letter_a											Error			{}
-			letter_t											kORt			{}
-			letter_question										Error			{}
-			letter_j											Error			{}
-			letter_i											Error			{}
-			letter_d											Error			{}
-			letter_space										Error			{}
-			letter_tab											Error			{}
-			letter_equals										Error			{}
-			letter_colon										Error			{}
-			EOS													Start			{Unacceptable();}
-}
-
-kORt
-{
-			other												Error			{}
-			letter_l											Error			{}
-			letter_k											Error			{}
-			letter_c											Error			{}
-			letter_h											Error			{}
-			letter_a											Error			{}
-			letter_t											Error			{}
-			letter_question										j				{}
-			letter_j											Error			{}
-			letter_i											Error			{}
-			letter_d											Error			{}
-			letter_space										Error			{}
-			letter_tab											Error			{}
-			letter_equals										Error			{}
-			letter_colon										Error			{}
-			EOS													Start			{Unacceptable();}
-}
-
-j
-{
-			other												Error			{}
-			letter_l											Error			{}
-			letter_k											Error			{}
-			letter_c											Error			{}
-			letter_h											Error			{}
-			letter_a											Error			{}
-			letter_t											Error			{}
-			letter_question										Error			{}
-			letter_j											i				{}
-			letter_i											Error			{}
-			letter_d											Error			{}
-			letter_space										Error			{}
-			letter_tab											Error			{}
-			letter_equals										Error			{}
-			letter_colon										Error			{}
-			EOS													Start			{Unacceptable();}
-}
-
-i
-{
-			other												Error			{}
-			letter_l											Error			{}
-			letter_k											Error			{}
-			letter_c											Error			{}
-			letter_h											Error			{}
-			letter_a											Error			{}
-			letter_t											Error			{}
-			letter_question										Error			{}
-			letter_j											Error			{}
-			letter_i											d				{}
-			letter_d											Error			{}
-			letter_space										Error			{}
-			letter_tab											Error			{}
-			letter_equals										Error			{}
-			letter_colon										Error			{}
-			EOS													Start			{Unacceptable();}
-}
-
-d
-{
-			other												Error			{}
-			letter_l											Error			{}
-			letter_k											Error			{}
-			letter_c											Error			{}
-			letter_h											Error			{}
-			letter_a											Error			{}
-			letter_t											Error			{}
-			letter_question										Error			{}
-			letter_j											Error			{}
-			letter_i											Error			{}
-			letter_d											equals			{}
-			letter_space										Error			{}
-			letter_tab											Error			{}
-			letter_equals										Error			{}
-			letter_colon										Error			{}
-			EOS													Start			{Unacceptable();}
-}
-
-equals
-{
-			other												Error			{}
-			letter_l											Error			{}
-			letter_k											Error			{}
-			letter_c											Error			{}
-			letter_h											Error			{}
-			letter_a											Error			{}
-			letter_t											Error			{}
-			letter_question										Error			{}
-			letter_j											Error			{}
-			letter_i											Error			{}
-			letter_d											Error			{}
-			letter_space										Error			{}
-			letter_tab											Error			{}
-			letter_equals										at				{}
-			letter_colon										Error			{}
+			a_zAND0_9(ch: char&)								Error			{}
+			a_z(ch: char&)										BS				{addBSSymbol(ch);}
 			EOS													Start			{Unacceptable();}
 }
 
 at
 {
-			other												Error			{}
-			a_zAND0_9(ch: char&)								user			{}
-			a_z(ch: char&)										user			{}
-			EOS													Start			{Unacceptable();}
+			letter_question(ch: char&)							Error			{}
+			letter_equals(ch: char&)							Error			{}
+			letter_colon(ch: char&)								Error			{}
 			letter_at											Error			{}
 			letter_point										Error			{}
+			a_zAND0_9(ch: char&)[ctxt.getBS().isCorrect()]		user			{}
+			a_zAND0_9(ch: char&)								Error			{}
+			a_z(ch: char&)[ctxt.getBS().isCorrect()]			user			{}
+			a_z(ch: char&)										Error			{}
+			EOS													Start			{Unacceptable();}
 }
 
 user
 {
-			other												Error			{}
+			letter_question(ch: char&)							Error			{}
+			letter_equals(ch: char&)							Error			{}
+			letter_colon(ch: char&)								Error			{}
+			letter_at											point			{}
+			letter_point										Error			{}
 			a_zAND0_9(ch: char&)								user			{}
 			a_z(ch: char&)										user			{}
 			EOS													Start			{Unacceptable();}
-			letter_at											point			{}
-			letter_point										Error			{}
 }
 
 point
 {
-			other												Error			{}
+			letter_question(ch: char&)							Error			{}
+			letter_equals(ch: char&)							Error			{}
+			letter_colon(ch: char&)								Error			{}
+			letter_at											Error			{}
+			letter_point										Error			{}
 			a_zAND0_9(ch: char&)								server			{addServerSymbol(ch);}
 			a_z(ch: char&)										server			{addServerSymbol(ch);}
 			EOS													Start			{Unacceptable();}
-			letter_at											Error			{}
-			letter_point										Error			{}
 }
 
 server
 {
-			other												Error			{}
+			letter_question(ch: char&)							Error			{}
+			letter_equals(ch: char&)							Error			{}
+			letter_colon(ch: char&)								Error			{}
+			letter_at											Error			{}
+			letter_point										eos				{}
 			a_zAND0_9(ch: char&)								server			{addServerSymbol(ch);}
 			a_z(ch: char&)										server			{addServerSymbol(ch);}
 			EOS													Start			{Unacceptable();}
-			letter_at											Error			{}
-			letter_point										eos				{}
 }
 
 eos
 {
-			other												Error			{}
+			letter_question(ch: char&)							Error			{}
+			letter_equals(ch: char&)							Error			{}
+			letter_colon(ch: char&)								Error			{}
+			letter_at											Error			{}
+			letter_point										Error			{}
 			a_zAND0_9(ch: char&)								Error			{}
 			a_z(ch: char&)										zone			{addZoneSymbol(ch);}
 			EOS													Start			{Unacceptable();}
-			letter_at											Error			{}
-			letter_point										Error			{}
 }
 
 zone
 {
-			other												Error			{}
+			letter_question(ch: char&)							Error			{}
+			letter_equals(ch: char&)							Error			{}
+			letter_colon(ch: char&)								Error			{}
+			letter_at											Error			{}
+			letter_point										Error			{}
 			a_zAND0_9(ch: char&)								Error			{}
 			a_z(ch: char&) [ctxt.getZone().isCorrect()]			zone			{addZoneSymbol(ch);}
 			a_z(ch: char&)										Error			{}
 			EOS													Start			{Acceptable();}
-			letter_at											Error			{}
-			letter_point										Error			{}
 }
 
 OK
 {}
 
+Default
+{
+			other												Error			{}
+			letter_space										Error			{}
+			letter_tab											Error			{}
+}
+
 Error
 {
-			other												nil				{}
-			letter_l											nil				{}
-			letter_k											nil				{}
-			letter_c											nil				{}
-			letter_h											nil				{}
-			letter_a											nil				{}
-			letter_t											nil				{}
-			letter_j											nil				{}
-			letter_i											nil				{}
-			letter_d											nil				{}
-			letter_question										nil				{}
-			letter_equals										nil				{}
-			letter_colon										nil				{}
+			letter_question(ch: char&)							nil				{}
+			letter_equals(ch: char&)							nil				{}
+			letter_colon(ch: char&)								nil				{}
 			letter_at											nil				{}
 			letter_point										nil				{}
 			a_zAND0_9(ch: char&)								nil				{}

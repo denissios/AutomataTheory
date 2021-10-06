@@ -52,24 +52,15 @@ using namespace statemap;
 
 // Static class declarations.
 Map1_Start Map1::Start("Map1::Start", 0);
-Map1_gtalk Map1::gtalk("Map1::gtalk", 1);
-Map1_question Map1::question("Map1::question", 2);
-Map1_tORc Map1::tORc("Map1::tORc", 3);
-Map1_aORh Map1::aORh("Map1::aORh", 4);
-Map1_lORa Map1::lORa("Map1::lORa", 5);
-Map1_kORt Map1::kORt("Map1::kORt", 6);
-Map1_j Map1::j("Map1::j", 7);
-Map1_i Map1::i("Map1::i", 8);
-Map1_d Map1::d("Map1::d", 9);
-Map1_equals Map1::equals("Map1::equals", 10);
-Map1_at Map1::at("Map1::at", 11);
-Map1_user Map1::user("Map1::user", 12);
-Map1_point Map1::point("Map1::point", 13);
-Map1_server Map1::server("Map1::server", 14);
-Map1_eos Map1::eos("Map1::eos", 15);
-Map1_zone Map1::zone("Map1::zone", 16);
-Map1_OK Map1::OK("Map1::OK", 17);
-Map1_Error Map1::Error("Map1::Error", 18);
+Map1_BS Map1::BS("Map1::BS", 1);
+Map1_at Map1::at("Map1::at", 2);
+Map1_user Map1::user("Map1::user", 3);
+Map1_point Map1::point("Map1::point", 4);
+Map1_server Map1::server("Map1::server", 5);
+Map1_eos Map1::eos("Map1::eos", 6);
+Map1_zone Map1::zone("Map1::zone", 7);
+Map1_OK Map1::OK("Map1::OK", 8);
+Map1_Error Map1::Error("Map1::Error", 9);
 
 void AppClassState::EOS(AppClassContext& context)
 {
@@ -86,57 +77,17 @@ void AppClassState::a_zAND0_9(AppClassContext& context, char& ch)
     Default(context);
 }
 
-void AppClassState::letter_a(AppClassContext& context)
-{
-    Default(context);
-}
-
 void AppClassState::letter_at(AppClassContext& context)
 {
     Default(context);
 }
 
-void AppClassState::letter_c(AppClassContext& context)
+void AppClassState::letter_colon(AppClassContext& context, char& ch)
 {
     Default(context);
 }
 
-void AppClassState::letter_colon(AppClassContext& context)
-{
-    Default(context);
-}
-
-void AppClassState::letter_d(AppClassContext& context)
-{
-    Default(context);
-}
-
-void AppClassState::letter_equals(AppClassContext& context)
-{
-    Default(context);
-}
-
-void AppClassState::letter_h(AppClassContext& context)
-{
-    Default(context);
-}
-
-void AppClassState::letter_i(AppClassContext& context)
-{
-    Default(context);
-}
-
-void AppClassState::letter_j(AppClassContext& context)
-{
-    Default(context);
-}
-
-void AppClassState::letter_k(AppClassContext& context)
-{
-    Default(context);
-}
-
-void AppClassState::letter_l(AppClassContext& context)
+void AppClassState::letter_equals(AppClassContext& context, char& ch)
 {
     Default(context);
 }
@@ -146,17 +97,12 @@ void AppClassState::letter_point(AppClassContext& context)
     Default(context);
 }
 
-void AppClassState::letter_question(AppClassContext& context)
+void AppClassState::letter_question(AppClassContext& context, char& ch)
 {
     Default(context);
 }
 
 void AppClassState::letter_space(AppClassContext& context)
-{
-    Default(context);
-}
-
-void AppClassState::letter_t(AppClassContext& context)
 {
     Default(context);
 }
@@ -180,6 +126,33 @@ void AppClassState::Default(AppClassContext& context)
 
 }
 
+void Map1_Default::other(AppClassContext& context)
+{
+
+    context.getState().Exit(context);
+    context.setState(Map1::Error);
+    context.getState().Entry(context);
+
+}
+
+void Map1_Default::letter_space(AppClassContext& context)
+{
+
+    context.getState().Exit(context);
+    context.setState(Map1::Error);
+    context.getState().Entry(context);
+
+}
+
+void Map1_Default::letter_tab(AppClassContext& context)
+{
+
+    context.getState().Exit(context);
+    context.setState(Map1::Error);
+    context.getState().Entry(context);
+
+}
+
 void Map1_Start::EOS(AppClassContext& context)
 {
     AppClass& ctxt = context.getOwner();
@@ -200,7 +173,7 @@ void Map1_Start::EOS(AppClassContext& context)
 
 }
 
-void Map1_Start::letter_a(AppClassContext& context)
+void Map1_Start::a_z(AppClassContext& context, char& ch)
 {
     AppClass& ctxt = context.getOwner();
 
@@ -209,13 +182,23 @@ void Map1_Start::letter_a(AppClassContext& context)
     try
     {
         ctxt.reset();
-        context.setState(Map1::gtalk);
+        ctxt.addBSSymbol(ch);
+        context.setState(Map1::BS);
     }
     catch (...)
     {
-        context.setState(Map1::gtalk);
+        context.setState(Map1::BS);
         throw;
     }
+    context.getState().Entry(context);
+
+}
+
+void Map1_Start::a_zAND0_9(AppClassContext& context, char& ch)
+{
+
+    context.getState().Exit(context);
+    context.setState(Map1::Error);
     context.getState().Entry(context);
 
 }
@@ -229,27 +212,7 @@ void Map1_Start::letter_at(AppClassContext& context)
 
 }
 
-void Map1_Start::letter_c(AppClassContext& context)
-{
-    AppClass& ctxt = context.getOwner();
-
-    context.getState().Exit(context);
-    context.clearState();
-    try
-    {
-        ctxt.reset();
-        context.setState(Map1::gtalk);
-    }
-    catch (...)
-    {
-        context.setState(Map1::gtalk);
-        throw;
-    }
-    context.getState().Entry(context);
-
-}
-
-void Map1_Start::letter_colon(AppClassContext& context)
+void Map1_Start::letter_colon(AppClassContext& context, char& ch)
 {
 
     context.getState().Exit(context);
@@ -258,131 +221,11 @@ void Map1_Start::letter_colon(AppClassContext& context)
 
 }
 
-void Map1_Start::letter_d(AppClassContext& context)
-{
-    AppClass& ctxt = context.getOwner();
-
-    context.getState().Exit(context);
-    context.clearState();
-    try
-    {
-        ctxt.reset();
-        context.setState(Map1::gtalk);
-    }
-    catch (...)
-    {
-        context.setState(Map1::gtalk);
-        throw;
-    }
-    context.getState().Entry(context);
-
-}
-
-void Map1_Start::letter_equals(AppClassContext& context)
+void Map1_Start::letter_equals(AppClassContext& context, char& ch)
 {
 
     context.getState().Exit(context);
     context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_Start::letter_h(AppClassContext& context)
-{
-    AppClass& ctxt = context.getOwner();
-
-    context.getState().Exit(context);
-    context.clearState();
-    try
-    {
-        ctxt.reset();
-        context.setState(Map1::gtalk);
-    }
-    catch (...)
-    {
-        context.setState(Map1::gtalk);
-        throw;
-    }
-    context.getState().Entry(context);
-
-}
-
-void Map1_Start::letter_i(AppClassContext& context)
-{
-    AppClass& ctxt = context.getOwner();
-
-    context.getState().Exit(context);
-    context.clearState();
-    try
-    {
-        ctxt.reset();
-        context.setState(Map1::gtalk);
-    }
-    catch (...)
-    {
-        context.setState(Map1::gtalk);
-        throw;
-    }
-    context.getState().Entry(context);
-
-}
-
-void Map1_Start::letter_j(AppClassContext& context)
-{
-    AppClass& ctxt = context.getOwner();
-
-    context.getState().Exit(context);
-    context.clearState();
-    try
-    {
-        ctxt.reset();
-        context.setState(Map1::gtalk);
-    }
-    catch (...)
-    {
-        context.setState(Map1::gtalk);
-        throw;
-    }
-    context.getState().Entry(context);
-
-}
-
-void Map1_Start::letter_k(AppClassContext& context)
-{
-    AppClass& ctxt = context.getOwner();
-
-    context.getState().Exit(context);
-    context.clearState();
-    try
-    {
-        ctxt.reset();
-        context.setState(Map1::gtalk);
-    }
-    catch (...)
-    {
-        context.setState(Map1::gtalk);
-        throw;
-    }
-    context.getState().Entry(context);
-
-}
-
-void Map1_Start::letter_l(AppClassContext& context)
-{
-    AppClass& ctxt = context.getOwner();
-
-    context.getState().Exit(context);
-    context.clearState();
-    try
-    {
-        ctxt.reset();
-        context.setState(Map1::gtalk);
-    }
-    catch (...)
-    {
-        context.setState(Map1::gtalk);
-        throw;
-    }
     context.getState().Entry(context);
 
 }
@@ -396,7 +239,7 @@ void Map1_Start::letter_point(AppClassContext& context)
 
 }
 
-void Map1_Start::letter_question(AppClassContext& context)
+void Map1_Start::letter_question(AppClassContext& context, char& ch)
 {
 
     context.getState().Exit(context);
@@ -405,65 +248,7 @@ void Map1_Start::letter_question(AppClassContext& context)
 
 }
 
-void Map1_Start::letter_space(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_Start::letter_t(AppClassContext& context)
-{
-    AppClass& ctxt = context.getOwner();
-
-    context.getState().Exit(context);
-    context.clearState();
-    try
-    {
-        ctxt.reset();
-        context.setState(Map1::gtalk);
-    }
-    catch (...)
-    {
-        context.setState(Map1::gtalk);
-        throw;
-    }
-    context.getState().Entry(context);
-
-}
-
-void Map1_Start::letter_tab(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_Start::other(AppClassContext& context)
-{
-    AppClass& ctxt = context.getOwner();
-
-    context.getState().Exit(context);
-    context.clearState();
-    try
-    {
-        ctxt.reset();
-        context.setState(Map1::gtalk);
-    }
-    catch (...)
-    {
-        context.setState(Map1::gtalk);
-        throw;
-    }
-    context.getState().Entry(context);
-
-}
-
-void Map1_gtalk::EOS(AppClassContext& context)
+void Map1_BS::EOS(AppClassContext& context)
 {
     AppClass& ctxt = context.getOwner();
 
@@ -483,160 +268,7 @@ void Map1_gtalk::EOS(AppClassContext& context)
 
 }
 
-void Map1_gtalk::letter_a(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::gtalk);
-    context.getState().Entry(context);
-
-}
-
-void Map1_gtalk::letter_at(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_gtalk::letter_c(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::gtalk);
-    context.getState().Entry(context);
-
-}
-
-void Map1_gtalk::letter_colon(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::question);
-    context.getState().Entry(context);
-
-}
-
-void Map1_gtalk::letter_d(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::gtalk);
-    context.getState().Entry(context);
-
-}
-
-void Map1_gtalk::letter_equals(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_gtalk::letter_h(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::gtalk);
-    context.getState().Entry(context);
-
-}
-
-void Map1_gtalk::letter_i(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::gtalk);
-    context.getState().Entry(context);
-
-}
-
-void Map1_gtalk::letter_j(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::gtalk);
-    context.getState().Entry(context);
-
-}
-
-void Map1_gtalk::letter_k(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::gtalk);
-    context.getState().Entry(context);
-
-}
-
-void Map1_gtalk::letter_l(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::gtalk);
-    context.getState().Entry(context);
-
-}
-
-void Map1_gtalk::letter_point(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_gtalk::letter_question(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_gtalk::letter_space(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_gtalk::letter_t(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::gtalk);
-    context.getState().Entry(context);
-
-}
-
-void Map1_gtalk::letter_tab(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_gtalk::other(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::gtalk);
-    context.getState().Entry(context);
-
-}
-
-void Map1_question::EOS(AppClassContext& context)
+void Map1_BS::a_z(AppClassContext& context, char& ch)
 {
     AppClass& ctxt = context.getOwner();
 
@@ -644,19 +276,19 @@ void Map1_question::EOS(AppClassContext& context)
     context.clearState();
     try
     {
-        ctxt.Unacceptable();
-        context.setState(Map1::Start);
+        ctxt.addBSSymbol(ch);
+        context.setState(Map1::BS);
     }
     catch (...)
     {
-        context.setState(Map1::Start);
+        context.setState(Map1::BS);
         throw;
     }
     context.getState().Entry(context);
 
 }
 
-void Map1_question::letter_a(AppClassContext& context)
+void Map1_BS::a_zAND0_9(AppClassContext& context, char& ch)
 {
 
     context.getState().Exit(context);
@@ -665,16 +297,7 @@ void Map1_question::letter_a(AppClassContext& context)
 
 }
 
-void Map1_question::letter_c(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::tORc);
-    context.getState().Entry(context);
-
-}
-
-void Map1_question::letter_colon(AppClassContext& context)
+void Map1_BS::letter_at(AppClassContext& context)
 {
 
     context.getState().Exit(context);
@@ -683,115 +306,7 @@ void Map1_question::letter_colon(AppClassContext& context)
 
 }
 
-void Map1_question::letter_d(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_question::letter_equals(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_question::letter_h(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_question::letter_i(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_question::letter_j(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_question::letter_k(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_question::letter_l(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_question::letter_question(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_question::letter_space(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_question::letter_t(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::tORc);
-    context.getState().Entry(context);
-
-}
-
-void Map1_question::letter_tab(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_question::other(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_tORc::EOS(AppClassContext& context)
+void Map1_BS::letter_colon(AppClassContext& context, char& ch)
 {
     AppClass& ctxt = context.getOwner();
 
@@ -799,154 +314,19 @@ void Map1_tORc::EOS(AppClassContext& context)
     context.clearState();
     try
     {
-        ctxt.Unacceptable();
-        context.setState(Map1::Start);
+        ctxt.addBSSymbol(ch);
+        context.setState(Map1::BS);
     }
     catch (...)
     {
-        context.setState(Map1::Start);
+        context.setState(Map1::BS);
         throw;
     }
     context.getState().Entry(context);
 
 }
 
-void Map1_tORc::letter_a(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::aORh);
-    context.getState().Entry(context);
-
-}
-
-void Map1_tORc::letter_c(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_tORc::letter_colon(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_tORc::letter_d(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_tORc::letter_equals(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_tORc::letter_h(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::aORh);
-    context.getState().Entry(context);
-
-}
-
-void Map1_tORc::letter_i(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_tORc::letter_j(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_tORc::letter_k(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_tORc::letter_l(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_tORc::letter_question(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_tORc::letter_space(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_tORc::letter_t(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_tORc::letter_tab(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_tORc::other(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_aORh::EOS(AppClassContext& context)
+void Map1_BS::letter_equals(AppClassContext& context, char& ch)
 {
     AppClass& ctxt = context.getOwner();
 
@@ -954,28 +334,19 @@ void Map1_aORh::EOS(AppClassContext& context)
     context.clearState();
     try
     {
-        ctxt.Unacceptable();
-        context.setState(Map1::Start);
+        ctxt.addBSSymbol(ch);
+        context.setState(Map1::at);
     }
     catch (...)
     {
-        context.setState(Map1::Start);
+        context.setState(Map1::at);
         throw;
     }
     context.getState().Entry(context);
 
 }
 
-void Map1_aORh::letter_a(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::lORa);
-    context.getState().Entry(context);
-
-}
-
-void Map1_aORh::letter_c(AppClassContext& context)
+void Map1_BS::letter_point(AppClassContext& context)
 {
 
     context.getState().Exit(context);
@@ -984,124 +355,7 @@ void Map1_aORh::letter_c(AppClassContext& context)
 
 }
 
-void Map1_aORh::letter_colon(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_aORh::letter_d(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_aORh::letter_equals(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_aORh::letter_h(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_aORh::letter_i(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_aORh::letter_j(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_aORh::letter_k(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_aORh::letter_l(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::lORa);
-    context.getState().Entry(context);
-
-}
-
-void Map1_aORh::letter_question(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_aORh::letter_space(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_aORh::letter_t(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_aORh::letter_tab(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_aORh::other(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_lORa::EOS(AppClassContext& context)
+void Map1_BS::letter_question(AppClassContext& context, char& ch)
 {
     AppClass& ctxt = context.getOwner();
 
@@ -1109,924 +363,14 @@ void Map1_lORa::EOS(AppClassContext& context)
     context.clearState();
     try
     {
-        ctxt.Unacceptable();
-        context.setState(Map1::Start);
+        ctxt.addBSSymbol(ch);
+        context.setState(Map1::BS);
     }
     catch (...)
     {
-        context.setState(Map1::Start);
+        context.setState(Map1::BS);
         throw;
     }
-    context.getState().Entry(context);
-
-}
-
-void Map1_lORa::letter_a(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_lORa::letter_c(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_lORa::letter_colon(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_lORa::letter_d(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_lORa::letter_equals(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_lORa::letter_h(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_lORa::letter_i(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_lORa::letter_j(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_lORa::letter_k(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::kORt);
-    context.getState().Entry(context);
-
-}
-
-void Map1_lORa::letter_l(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_lORa::letter_question(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_lORa::letter_space(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_lORa::letter_t(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::kORt);
-    context.getState().Entry(context);
-
-}
-
-void Map1_lORa::letter_tab(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_lORa::other(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_kORt::EOS(AppClassContext& context)
-{
-    AppClass& ctxt = context.getOwner();
-
-    context.getState().Exit(context);
-    context.clearState();
-    try
-    {
-        ctxt.Unacceptable();
-        context.setState(Map1::Start);
-    }
-    catch (...)
-    {
-        context.setState(Map1::Start);
-        throw;
-    }
-    context.getState().Entry(context);
-
-}
-
-void Map1_kORt::letter_a(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_kORt::letter_c(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_kORt::letter_colon(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_kORt::letter_d(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_kORt::letter_equals(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_kORt::letter_h(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_kORt::letter_i(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_kORt::letter_j(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_kORt::letter_k(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_kORt::letter_l(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_kORt::letter_question(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::j);
-    context.getState().Entry(context);
-
-}
-
-void Map1_kORt::letter_space(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_kORt::letter_t(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_kORt::letter_tab(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_kORt::other(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_j::EOS(AppClassContext& context)
-{
-    AppClass& ctxt = context.getOwner();
-
-    context.getState().Exit(context);
-    context.clearState();
-    try
-    {
-        ctxt.Unacceptable();
-        context.setState(Map1::Start);
-    }
-    catch (...)
-    {
-        context.setState(Map1::Start);
-        throw;
-    }
-    context.getState().Entry(context);
-
-}
-
-void Map1_j::letter_a(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_j::letter_c(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_j::letter_colon(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_j::letter_d(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_j::letter_equals(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_j::letter_h(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_j::letter_i(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_j::letter_j(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::i);
-    context.getState().Entry(context);
-
-}
-
-void Map1_j::letter_k(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_j::letter_l(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_j::letter_question(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_j::letter_space(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_j::letter_t(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_j::letter_tab(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_j::other(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_i::EOS(AppClassContext& context)
-{
-    AppClass& ctxt = context.getOwner();
-
-    context.getState().Exit(context);
-    context.clearState();
-    try
-    {
-        ctxt.Unacceptable();
-        context.setState(Map1::Start);
-    }
-    catch (...)
-    {
-        context.setState(Map1::Start);
-        throw;
-    }
-    context.getState().Entry(context);
-
-}
-
-void Map1_i::letter_a(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_i::letter_c(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_i::letter_colon(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_i::letter_d(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_i::letter_equals(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_i::letter_h(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_i::letter_i(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::d);
-    context.getState().Entry(context);
-
-}
-
-void Map1_i::letter_j(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_i::letter_k(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_i::letter_l(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_i::letter_question(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_i::letter_space(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_i::letter_t(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_i::letter_tab(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_i::other(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_d::EOS(AppClassContext& context)
-{
-    AppClass& ctxt = context.getOwner();
-
-    context.getState().Exit(context);
-    context.clearState();
-    try
-    {
-        ctxt.Unacceptable();
-        context.setState(Map1::Start);
-    }
-    catch (...)
-    {
-        context.setState(Map1::Start);
-        throw;
-    }
-    context.getState().Entry(context);
-
-}
-
-void Map1_d::letter_a(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_d::letter_c(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_d::letter_colon(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_d::letter_d(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::equals);
-    context.getState().Entry(context);
-
-}
-
-void Map1_d::letter_equals(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_d::letter_h(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_d::letter_i(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_d::letter_j(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_d::letter_k(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_d::letter_l(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_d::letter_question(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_d::letter_space(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_d::letter_t(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_d::letter_tab(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_d::other(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_equals::EOS(AppClassContext& context)
-{
-    AppClass& ctxt = context.getOwner();
-
-    context.getState().Exit(context);
-    context.clearState();
-    try
-    {
-        ctxt.Unacceptable();
-        context.setState(Map1::Start);
-    }
-    catch (...)
-    {
-        context.setState(Map1::Start);
-        throw;
-    }
-    context.getState().Entry(context);
-
-}
-
-void Map1_equals::letter_a(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_equals::letter_c(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_equals::letter_colon(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_equals::letter_d(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_equals::letter_equals(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::at);
-    context.getState().Entry(context);
-
-}
-
-void Map1_equals::letter_h(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_equals::letter_i(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_equals::letter_j(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_equals::letter_k(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_equals::letter_l(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_equals::letter_question(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_equals::letter_space(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_equals::letter_t(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_equals::letter_tab(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
-    context.getState().Entry(context);
-
-}
-
-void Map1_equals::other(AppClassContext& context)
-{
-
-    context.getState().Exit(context);
-    context.setState(Map1::Error);
     context.getState().Entry(context);
 
 }
@@ -2053,23 +397,63 @@ void Map1_at::EOS(AppClassContext& context)
 
 void Map1_at::a_z(AppClassContext& context, char& ch)
 {
+    AppClass& ctxt = context.getOwner();
 
-    context.getState().Exit(context);
-    context.setState(Map1::user);
-    context.getState().Entry(context);
+    if (ctxt.getBS().isCorrect())
+    {
+        context.getState().Exit(context);
+        // No actions.
+        context.setState(Map1::user);
+        context.getState().Entry(context);
+    }
+    else
+    {
+        context.getState().Exit(context);
+        context.setState(Map1::Error);
+        context.getState().Entry(context);
+    }
 
 }
 
 void Map1_at::a_zAND0_9(AppClassContext& context, char& ch)
 {
+    AppClass& ctxt = context.getOwner();
 
-    context.getState().Exit(context);
-    context.setState(Map1::user);
-    context.getState().Entry(context);
+    if (ctxt.getBS().isCorrect())
+    {
+        context.getState().Exit(context);
+        // No actions.
+        context.setState(Map1::user);
+        context.getState().Entry(context);
+    }
+    else
+    {
+        context.getState().Exit(context);
+        context.setState(Map1::Error);
+        context.getState().Entry(context);
+    }
 
 }
 
 void Map1_at::letter_at(AppClassContext& context)
+{
+
+    context.getState().Exit(context);
+    context.setState(Map1::Error);
+    context.getState().Entry(context);
+
+}
+
+void Map1_at::letter_colon(AppClassContext& context, char& ch)
+{
+
+    context.getState().Exit(context);
+    context.setState(Map1::Error);
+    context.getState().Entry(context);
+
+}
+
+void Map1_at::letter_equals(AppClassContext& context, char& ch)
 {
 
     context.getState().Exit(context);
@@ -2087,7 +471,7 @@ void Map1_at::letter_point(AppClassContext& context)
 
 }
 
-void Map1_at::other(AppClassContext& context)
+void Map1_at::letter_question(AppClassContext& context, char& ch)
 {
 
     context.getState().Exit(context);
@@ -2143,6 +527,24 @@ void Map1_user::letter_at(AppClassContext& context)
 
 }
 
+void Map1_user::letter_colon(AppClassContext& context, char& ch)
+{
+
+    context.getState().Exit(context);
+    context.setState(Map1::Error);
+    context.getState().Entry(context);
+
+}
+
+void Map1_user::letter_equals(AppClassContext& context, char& ch)
+{
+
+    context.getState().Exit(context);
+    context.setState(Map1::Error);
+    context.getState().Entry(context);
+
+}
+
 void Map1_user::letter_point(AppClassContext& context)
 {
 
@@ -2152,7 +554,7 @@ void Map1_user::letter_point(AppClassContext& context)
 
 }
 
-void Map1_user::other(AppClassContext& context)
+void Map1_user::letter_question(AppClassContext& context, char& ch)
 {
 
     context.getState().Exit(context);
@@ -2230,6 +632,24 @@ void Map1_point::letter_at(AppClassContext& context)
 
 }
 
+void Map1_point::letter_colon(AppClassContext& context, char& ch)
+{
+
+    context.getState().Exit(context);
+    context.setState(Map1::Error);
+    context.getState().Entry(context);
+
+}
+
+void Map1_point::letter_equals(AppClassContext& context, char& ch)
+{
+
+    context.getState().Exit(context);
+    context.setState(Map1::Error);
+    context.getState().Entry(context);
+
+}
+
 void Map1_point::letter_point(AppClassContext& context)
 {
 
@@ -2239,7 +659,7 @@ void Map1_point::letter_point(AppClassContext& context)
 
 }
 
-void Map1_point::other(AppClassContext& context)
+void Map1_point::letter_question(AppClassContext& context, char& ch)
 {
 
     context.getState().Exit(context);
@@ -2317,6 +737,24 @@ void Map1_server::letter_at(AppClassContext& context)
 
 }
 
+void Map1_server::letter_colon(AppClassContext& context, char& ch)
+{
+
+    context.getState().Exit(context);
+    context.setState(Map1::Error);
+    context.getState().Entry(context);
+
+}
+
+void Map1_server::letter_equals(AppClassContext& context, char& ch)
+{
+
+    context.getState().Exit(context);
+    context.setState(Map1::Error);
+    context.getState().Entry(context);
+
+}
+
 void Map1_server::letter_point(AppClassContext& context)
 {
 
@@ -2326,7 +764,7 @@ void Map1_server::letter_point(AppClassContext& context)
 
 }
 
-void Map1_server::other(AppClassContext& context)
+void Map1_server::letter_question(AppClassContext& context, char& ch)
 {
 
     context.getState().Exit(context);
@@ -2393,6 +831,24 @@ void Map1_eos::letter_at(AppClassContext& context)
 
 }
 
+void Map1_eos::letter_colon(AppClassContext& context, char& ch)
+{
+
+    context.getState().Exit(context);
+    context.setState(Map1::Error);
+    context.getState().Entry(context);
+
+}
+
+void Map1_eos::letter_equals(AppClassContext& context, char& ch)
+{
+
+    context.getState().Exit(context);
+    context.setState(Map1::Error);
+    context.getState().Entry(context);
+
+}
+
 void Map1_eos::letter_point(AppClassContext& context)
 {
 
@@ -2402,7 +858,7 @@ void Map1_eos::letter_point(AppClassContext& context)
 
 }
 
-void Map1_eos::other(AppClassContext& context)
+void Map1_eos::letter_question(AppClassContext& context, char& ch)
 {
 
     context.getState().Exit(context);
@@ -2478,6 +934,24 @@ void Map1_zone::letter_at(AppClassContext& context)
 
 }
 
+void Map1_zone::letter_colon(AppClassContext& context, char& ch)
+{
+
+    context.getState().Exit(context);
+    context.setState(Map1::Error);
+    context.getState().Entry(context);
+
+}
+
+void Map1_zone::letter_equals(AppClassContext& context, char& ch)
+{
+
+    context.getState().Exit(context);
+    context.setState(Map1::Error);
+    context.getState().Entry(context);
+
+}
+
 void Map1_zone::letter_point(AppClassContext& context)
 {
 
@@ -2487,7 +961,7 @@ void Map1_zone::letter_point(AppClassContext& context)
 
 }
 
-void Map1_zone::other(AppClassContext& context)
+void Map1_zone::letter_question(AppClassContext& context, char& ch)
 {
 
     context.getState().Exit(context);
@@ -2528,67 +1002,19 @@ void Map1_Error::a_zAND0_9(AppClassContext& context, char& ch)
 
 }
 
-void Map1_Error::letter_a(AppClassContext& context)
-{
-
-
-}
-
 void Map1_Error::letter_at(AppClassContext& context)
 {
 
 
 }
 
-void Map1_Error::letter_c(AppClassContext& context)
+void Map1_Error::letter_colon(AppClassContext& context, char& ch)
 {
 
 
 }
 
-void Map1_Error::letter_colon(AppClassContext& context)
-{
-
-
-}
-
-void Map1_Error::letter_d(AppClassContext& context)
-{
-
-
-}
-
-void Map1_Error::letter_equals(AppClassContext& context)
-{
-
-
-}
-
-void Map1_Error::letter_h(AppClassContext& context)
-{
-
-
-}
-
-void Map1_Error::letter_i(AppClassContext& context)
-{
-
-
-}
-
-void Map1_Error::letter_j(AppClassContext& context)
-{
-
-
-}
-
-void Map1_Error::letter_k(AppClassContext& context)
-{
-
-
-}
-
-void Map1_Error::letter_l(AppClassContext& context)
+void Map1_Error::letter_equals(AppClassContext& context, char& ch)
 {
 
 
@@ -2600,19 +1026,7 @@ void Map1_Error::letter_point(AppClassContext& context)
 
 }
 
-void Map1_Error::letter_question(AppClassContext& context)
-{
-
-
-}
-
-void Map1_Error::letter_t(AppClassContext& context)
-{
-
-
-}
-
-void Map1_Error::other(AppClassContext& context)
+void Map1_Error::letter_question(AppClassContext& context, char& ch)
 {
 
 

@@ -113,11 +113,14 @@ void from_file(size_t type_output)
     std::string str;
     std::map<std::string, size_t> server_map;
 
-    unsigned int start_time = clock();
-    while (getline(fin, str))
+    unsigned int sum_time = 0;
+    while (getline(fin, str)) {
+        unsigned int start_time = clock();
         proceed(str, *out, server_map);
-    unsigned int end_time = clock();
-    std::cout << "Time: " << end_time - start_time << std::endl;
+        unsigned int end_time = clock();
+        sum_time += end_time - start_time;
+    }
+    std::cout << "Time: " << sum_time << std::endl;
 
     *out << std::endl;
     for (auto& [key, value] : server_map)
@@ -150,22 +153,22 @@ void proceed(std::string& str, std::ostream& out, std::map<std::string, size_t>&
 bool check_string(std::string& str, std::map<std::string, size_t>& server_map)
 {
     std::cmatch result;
-    std::regex regular("[^:?=@. \t]{1,}"
+    std::regex regular("gtalk"
                        ":"
-                       "[c|t][h|a][a|l][t|k]"
+                       "(chat|talk)"
                        "\\?"
-                       "[j][i][d]"
+                       "jid"
                        "="
                        "[a-zA-Z0-9]{1,}"
                        "@"
                        "([a-zA-Z0-9]{1,})"
                        "\\."
-                       "[a-zA-Z]{1,4}");
+                       "[a-zA-Z]{1,4}", std::regex_constants::icase);
 
     if (std::regex_match(str.c_str(), result, regular)) {
         bool isAdd = false;
         for (auto& [key, value] : server_map) {
-            if (key == result[1]) {
+            if (key == result[2]) {
                 value++;
                 isAdd = true;
                 break;
@@ -173,7 +176,7 @@ bool check_string(std::string& str, std::map<std::string, size_t>& server_map)
         }
 
         if (!isAdd)
-            server_map.emplace(result[1], 1);
+            server_map.emplace(result[2], 1);
 
         return true;
     }

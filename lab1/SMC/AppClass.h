@@ -5,6 +5,7 @@
 #include "AppClass_sm.h"
 #include "Zone.h"
 #include "Server.h"
+#include "BS.h"
 
 
 #ifdef CRTP
@@ -20,6 +21,7 @@ private:
 
     Zone zone;
     Server server;
+    BS bs;
     bool isAcceptable;
 
 public:
@@ -28,9 +30,11 @@ public:
     ~AppClass() {};
 
     [[nodiscard]] inline Zone getZone() { return zone; }
+    [[nodiscard]] inline BS getBS() { return bs; }
 
     inline void addZoneSymbol(char ch)   { zone.addSymbol(ch); }
     inline void addServerSymbol(char ch) { server.addSymbol(ch); }
+    inline void addBSSymbol(char ch) { bs.addSymbol(ch); }
 
     void reset();
     bool CheckString(std::string, std::map<std::string, size_t>& server_map);

@@ -16,16 +16,7 @@
 // Forward declarations.
 class Map1;
 class Map1_Start;
-class Map1_gtalk;
-class Map1_question;
-class Map1_tORc;
-class Map1_aORh;
-class Map1_lORa;
-class Map1_kORt;
-class Map1_j;
-class Map1_i;
-class Map1_d;
-class Map1_equals;
+class Map1_BS;
 class Map1_at;
 class Map1_user;
 class Map1_point;
@@ -54,21 +45,12 @@ public:
     virtual void EOS(AppClassContext& context);
     virtual void a_z(AppClassContext& context, char& ch);
     virtual void a_zAND0_9(AppClassContext& context, char& ch);
-    virtual void letter_a(AppClassContext& context);
     virtual void letter_at(AppClassContext& context);
-    virtual void letter_c(AppClassContext& context);
-    virtual void letter_colon(AppClassContext& context);
-    virtual void letter_d(AppClassContext& context);
-    virtual void letter_equals(AppClassContext& context);
-    virtual void letter_h(AppClassContext& context);
-    virtual void letter_i(AppClassContext& context);
-    virtual void letter_j(AppClassContext& context);
-    virtual void letter_k(AppClassContext& context);
-    virtual void letter_l(AppClassContext& context);
+    virtual void letter_colon(AppClassContext& context, char& ch);
+    virtual void letter_equals(AppClassContext& context, char& ch);
     virtual void letter_point(AppClassContext& context);
-    virtual void letter_question(AppClassContext& context);
+    virtual void letter_question(AppClassContext& context, char& ch);
     virtual void letter_space(AppClassContext& context);
-    virtual void letter_t(AppClassContext& context);
     virtual void letter_tab(AppClassContext& context);
     virtual void other(AppClassContext& context);
 
@@ -82,16 +64,7 @@ class Map1
 public:
 
     static Map1_Start Start;
-    static Map1_gtalk gtalk;
-    static Map1_question question;
-    static Map1_tORc tORc;
-    static Map1_aORh aORh;
-    static Map1_lORa lORa;
-    static Map1_kORt kORt;
-    static Map1_j j;
-    static Map1_i i;
-    static Map1_d d;
-    static Map1_equals equals;
+    static Map1_BS BS;
     static Map1_at at;
     static Map1_user user;
     static Map1_point point;
@@ -111,6 +84,9 @@ public:
     : AppClassState(name, stateId)
     {};
 
+    virtual void other(AppClassContext& context);
+    virtual void letter_space(AppClassContext& context);
+    virtual void letter_tab(AppClassContext& context);
 };
 
 class Map1_Start :
@@ -122,285 +98,31 @@ public:
     {};
 
     virtual void EOS(AppClassContext& context);
-    virtual void letter_a(AppClassContext& context);
+    virtual void a_z(AppClassContext& context, char& ch);
+    virtual void a_zAND0_9(AppClassContext& context, char& ch);
     virtual void letter_at(AppClassContext& context);
-    virtual void letter_c(AppClassContext& context);
-    virtual void letter_colon(AppClassContext& context);
-    virtual void letter_d(AppClassContext& context);
-    virtual void letter_equals(AppClassContext& context);
-    virtual void letter_h(AppClassContext& context);
-    virtual void letter_i(AppClassContext& context);
-    virtual void letter_j(AppClassContext& context);
-    virtual void letter_k(AppClassContext& context);
-    virtual void letter_l(AppClassContext& context);
+    virtual void letter_colon(AppClassContext& context, char& ch);
+    virtual void letter_equals(AppClassContext& context, char& ch);
     virtual void letter_point(AppClassContext& context);
-    virtual void letter_question(AppClassContext& context);
-    virtual void letter_space(AppClassContext& context);
-    virtual void letter_t(AppClassContext& context);
-    virtual void letter_tab(AppClassContext& context);
-    virtual void other(AppClassContext& context);
+    virtual void letter_question(AppClassContext& context, char& ch);
 };
 
-class Map1_gtalk :
+class Map1_BS :
     public Map1_Default
 {
 public:
-    Map1_gtalk(const char * const name, const int stateId)
+    Map1_BS(const char * const name, const int stateId)
     : Map1_Default(name, stateId)
     {};
 
     virtual void EOS(AppClassContext& context);
-    virtual void letter_a(AppClassContext& context);
+    virtual void a_z(AppClassContext& context, char& ch);
+    virtual void a_zAND0_9(AppClassContext& context, char& ch);
     virtual void letter_at(AppClassContext& context);
-    virtual void letter_c(AppClassContext& context);
-    virtual void letter_colon(AppClassContext& context);
-    virtual void letter_d(AppClassContext& context);
-    virtual void letter_equals(AppClassContext& context);
-    virtual void letter_h(AppClassContext& context);
-    virtual void letter_i(AppClassContext& context);
-    virtual void letter_j(AppClassContext& context);
-    virtual void letter_k(AppClassContext& context);
-    virtual void letter_l(AppClassContext& context);
+    virtual void letter_colon(AppClassContext& context, char& ch);
+    virtual void letter_equals(AppClassContext& context, char& ch);
     virtual void letter_point(AppClassContext& context);
-    virtual void letter_question(AppClassContext& context);
-    virtual void letter_space(AppClassContext& context);
-    virtual void letter_t(AppClassContext& context);
-    virtual void letter_tab(AppClassContext& context);
-    virtual void other(AppClassContext& context);
-};
-
-class Map1_question :
-    public Map1_Default
-{
-public:
-    Map1_question(const char * const name, const int stateId)
-    : Map1_Default(name, stateId)
-    {};
-
-    virtual void EOS(AppClassContext& context);
-    virtual void letter_a(AppClassContext& context);
-    virtual void letter_c(AppClassContext& context);
-    virtual void letter_colon(AppClassContext& context);
-    virtual void letter_d(AppClassContext& context);
-    virtual void letter_equals(AppClassContext& context);
-    virtual void letter_h(AppClassContext& context);
-    virtual void letter_i(AppClassContext& context);
-    virtual void letter_j(AppClassContext& context);
-    virtual void letter_k(AppClassContext& context);
-    virtual void letter_l(AppClassContext& context);
-    virtual void letter_question(AppClassContext& context);
-    virtual void letter_space(AppClassContext& context);
-    virtual void letter_t(AppClassContext& context);
-    virtual void letter_tab(AppClassContext& context);
-    virtual void other(AppClassContext& context);
-};
-
-class Map1_tORc :
-    public Map1_Default
-{
-public:
-    Map1_tORc(const char * const name, const int stateId)
-    : Map1_Default(name, stateId)
-    {};
-
-    virtual void EOS(AppClassContext& context);
-    virtual void letter_a(AppClassContext& context);
-    virtual void letter_c(AppClassContext& context);
-    virtual void letter_colon(AppClassContext& context);
-    virtual void letter_d(AppClassContext& context);
-    virtual void letter_equals(AppClassContext& context);
-    virtual void letter_h(AppClassContext& context);
-    virtual void letter_i(AppClassContext& context);
-    virtual void letter_j(AppClassContext& context);
-    virtual void letter_k(AppClassContext& context);
-    virtual void letter_l(AppClassContext& context);
-    virtual void letter_question(AppClassContext& context);
-    virtual void letter_space(AppClassContext& context);
-    virtual void letter_t(AppClassContext& context);
-    virtual void letter_tab(AppClassContext& context);
-    virtual void other(AppClassContext& context);
-};
-
-class Map1_aORh :
-    public Map1_Default
-{
-public:
-    Map1_aORh(const char * const name, const int stateId)
-    : Map1_Default(name, stateId)
-    {};
-
-    virtual void EOS(AppClassContext& context);
-    virtual void letter_a(AppClassContext& context);
-    virtual void letter_c(AppClassContext& context);
-    virtual void letter_colon(AppClassContext& context);
-    virtual void letter_d(AppClassContext& context);
-    virtual void letter_equals(AppClassContext& context);
-    virtual void letter_h(AppClassContext& context);
-    virtual void letter_i(AppClassContext& context);
-    virtual void letter_j(AppClassContext& context);
-    virtual void letter_k(AppClassContext& context);
-    virtual void letter_l(AppClassContext& context);
-    virtual void letter_question(AppClassContext& context);
-    virtual void letter_space(AppClassContext& context);
-    virtual void letter_t(AppClassContext& context);
-    virtual void letter_tab(AppClassContext& context);
-    virtual void other(AppClassContext& context);
-};
-
-class Map1_lORa :
-    public Map1_Default
-{
-public:
-    Map1_lORa(const char * const name, const int stateId)
-    : Map1_Default(name, stateId)
-    {};
-
-    virtual void EOS(AppClassContext& context);
-    virtual void letter_a(AppClassContext& context);
-    virtual void letter_c(AppClassContext& context);
-    virtual void letter_colon(AppClassContext& context);
-    virtual void letter_d(AppClassContext& context);
-    virtual void letter_equals(AppClassContext& context);
-    virtual void letter_h(AppClassContext& context);
-    virtual void letter_i(AppClassContext& context);
-    virtual void letter_j(AppClassContext& context);
-    virtual void letter_k(AppClassContext& context);
-    virtual void letter_l(AppClassContext& context);
-    virtual void letter_question(AppClassContext& context);
-    virtual void letter_space(AppClassContext& context);
-    virtual void letter_t(AppClassContext& context);
-    virtual void letter_tab(AppClassContext& context);
-    virtual void other(AppClassContext& context);
-};
-
-class Map1_kORt :
-    public Map1_Default
-{
-public:
-    Map1_kORt(const char * const name, const int stateId)
-    : Map1_Default(name, stateId)
-    {};
-
-    virtual void EOS(AppClassContext& context);
-    virtual void letter_a(AppClassContext& context);
-    virtual void letter_c(AppClassContext& context);
-    virtual void letter_colon(AppClassContext& context);
-    virtual void letter_d(AppClassContext& context);
-    virtual void letter_equals(AppClassContext& context);
-    virtual void letter_h(AppClassContext& context);
-    virtual void letter_i(AppClassContext& context);
-    virtual void letter_j(AppClassContext& context);
-    virtual void letter_k(AppClassContext& context);
-    virtual void letter_l(AppClassContext& context);
-    virtual void letter_question(AppClassContext& context);
-    virtual void letter_space(AppClassContext& context);
-    virtual void letter_t(AppClassContext& context);
-    virtual void letter_tab(AppClassContext& context);
-    virtual void other(AppClassContext& context);
-};
-
-class Map1_j :
-    public Map1_Default
-{
-public:
-    Map1_j(const char * const name, const int stateId)
-    : Map1_Default(name, stateId)
-    {};
-
-    virtual void EOS(AppClassContext& context);
-    virtual void letter_a(AppClassContext& context);
-    virtual void letter_c(AppClassContext& context);
-    virtual void letter_colon(AppClassContext& context);
-    virtual void letter_d(AppClassContext& context);
-    virtual void letter_equals(AppClassContext& context);
-    virtual void letter_h(AppClassContext& context);
-    virtual void letter_i(AppClassContext& context);
-    virtual void letter_j(AppClassContext& context);
-    virtual void letter_k(AppClassContext& context);
-    virtual void letter_l(AppClassContext& context);
-    virtual void letter_question(AppClassContext& context);
-    virtual void letter_space(AppClassContext& context);
-    virtual void letter_t(AppClassContext& context);
-    virtual void letter_tab(AppClassContext& context);
-    virtual void other(AppClassContext& context);
-};
-
-class Map1_i :
-    public Map1_Default
-{
-public:
-    Map1_i(const char * const name, const int stateId)
-    : Map1_Default(name, stateId)
-    {};
-
-    virtual void EOS(AppClassContext& context);
-    virtual void letter_a(AppClassContext& context);
-    virtual void letter_c(AppClassContext& context);
-    virtual void letter_colon(AppClassContext& context);
-    virtual void letter_d(AppClassContext& context);
-    virtual void letter_equals(AppClassContext& context);
-    virtual void letter_h(AppClassContext& context);
-    virtual void letter_i(AppClassContext& context);
-    virtual void letter_j(AppClassContext& context);
-    virtual void letter_k(AppClassContext& context);
-    virtual void letter_l(AppClassContext& context);
-    virtual void letter_question(AppClassContext& context);
-    virtual void letter_space(AppClassContext& context);
-    virtual void letter_t(AppClassContext& context);
-    virtual void letter_tab(AppClassContext& context);
-    virtual void other(AppClassContext& context);
-};
-
-class Map1_d :
-    public Map1_Default
-{
-public:
-    Map1_d(const char * const name, const int stateId)
-    : Map1_Default(name, stateId)
-    {};
-
-    virtual void EOS(AppClassContext& context);
-    virtual void letter_a(AppClassContext& context);
-    virtual void letter_c(AppClassContext& context);
-    virtual void letter_colon(AppClassContext& context);
-    virtual void letter_d(AppClassContext& context);
-    virtual void letter_equals(AppClassContext& context);
-    virtual void letter_h(AppClassContext& context);
-    virtual void letter_i(AppClassContext& context);
-    virtual void letter_j(AppClassContext& context);
-    virtual void letter_k(AppClassContext& context);
-    virtual void letter_l(AppClassContext& context);
-    virtual void letter_question(AppClassContext& context);
-    virtual void letter_space(AppClassContext& context);
-    virtual void letter_t(AppClassContext& context);
-    virtual void letter_tab(AppClassContext& context);
-    virtual void other(AppClassContext& context);
-};
-
-class Map1_equals :
-    public Map1_Default
-{
-public:
-    Map1_equals(const char * const name, const int stateId)
-    : Map1_Default(name, stateId)
-    {};
-
-    virtual void EOS(AppClassContext& context);
-    virtual void letter_a(AppClassContext& context);
-    virtual void letter_c(AppClassContext& context);
-    virtual void letter_colon(AppClassContext& context);
-    virtual void letter_d(AppClassContext& context);
-    virtual void letter_equals(AppClassContext& context);
-    virtual void letter_h(AppClassContext& context);
-    virtual void letter_i(AppClassContext& context);
-    virtual void letter_j(AppClassContext& context);
-    virtual void letter_k(AppClassContext& context);
-    virtual void letter_l(AppClassContext& context);
-    virtual void letter_question(AppClassContext& context);
-    virtual void letter_space(AppClassContext& context);
-    virtual void letter_t(AppClassContext& context);
-    virtual void letter_tab(AppClassContext& context);
-    virtual void other(AppClassContext& context);
+    virtual void letter_question(AppClassContext& context, char& ch);
 };
 
 class Map1_at :
@@ -415,8 +137,10 @@ public:
     virtual void a_z(AppClassContext& context, char& ch);
     virtual void a_zAND0_9(AppClassContext& context, char& ch);
     virtual void letter_at(AppClassContext& context);
+    virtual void letter_colon(AppClassContext& context, char& ch);
+    virtual void letter_equals(AppClassContext& context, char& ch);
     virtual void letter_point(AppClassContext& context);
-    virtual void other(AppClassContext& context);
+    virtual void letter_question(AppClassContext& context, char& ch);
 };
 
 class Map1_user :
@@ -431,8 +155,10 @@ public:
     virtual void a_z(AppClassContext& context, char& ch);
     virtual void a_zAND0_9(AppClassContext& context, char& ch);
     virtual void letter_at(AppClassContext& context);
+    virtual void letter_colon(AppClassContext& context, char& ch);
+    virtual void letter_equals(AppClassContext& context, char& ch);
     virtual void letter_point(AppClassContext& context);
-    virtual void other(AppClassContext& context);
+    virtual void letter_question(AppClassContext& context, char& ch);
 };
 
 class Map1_point :
@@ -447,8 +173,10 @@ public:
     virtual void a_z(AppClassContext& context, char& ch);
     virtual void a_zAND0_9(AppClassContext& context, char& ch);
     virtual void letter_at(AppClassContext& context);
+    virtual void letter_colon(AppClassContext& context, char& ch);
+    virtual void letter_equals(AppClassContext& context, char& ch);
     virtual void letter_point(AppClassContext& context);
-    virtual void other(AppClassContext& context);
+    virtual void letter_question(AppClassContext& context, char& ch);
 };
 
 class Map1_server :
@@ -463,8 +191,10 @@ public:
     virtual void a_z(AppClassContext& context, char& ch);
     virtual void a_zAND0_9(AppClassContext& context, char& ch);
     virtual void letter_at(AppClassContext& context);
+    virtual void letter_colon(AppClassContext& context, char& ch);
+    virtual void letter_equals(AppClassContext& context, char& ch);
     virtual void letter_point(AppClassContext& context);
-    virtual void other(AppClassContext& context);
+    virtual void letter_question(AppClassContext& context, char& ch);
 };
 
 class Map1_eos :
@@ -479,8 +209,10 @@ public:
     virtual void a_z(AppClassContext& context, char& ch);
     virtual void a_zAND0_9(AppClassContext& context, char& ch);
     virtual void letter_at(AppClassContext& context);
+    virtual void letter_colon(AppClassContext& context, char& ch);
+    virtual void letter_equals(AppClassContext& context, char& ch);
     virtual void letter_point(AppClassContext& context);
-    virtual void other(AppClassContext& context);
+    virtual void letter_question(AppClassContext& context, char& ch);
 };
 
 class Map1_zone :
@@ -495,8 +227,10 @@ public:
     virtual void a_z(AppClassContext& context, char& ch);
     virtual void a_zAND0_9(AppClassContext& context, char& ch);
     virtual void letter_at(AppClassContext& context);
+    virtual void letter_colon(AppClassContext& context, char& ch);
+    virtual void letter_equals(AppClassContext& context, char& ch);
     virtual void letter_point(AppClassContext& context);
-    virtual void other(AppClassContext& context);
+    virtual void letter_question(AppClassContext& context, char& ch);
 };
 
 class Map1_OK :
@@ -520,21 +254,11 @@ public:
     virtual void EOS(AppClassContext& context);
     virtual void a_z(AppClassContext& context, char& ch);
     virtual void a_zAND0_9(AppClassContext& context, char& ch);
-    virtual void letter_a(AppClassContext& context);
     virtual void letter_at(AppClassContext& context);
-    virtual void letter_c(AppClassContext& context);
-    virtual void letter_colon(AppClassContext& context);
-    virtual void letter_d(AppClassContext& context);
-    virtual void letter_equals(AppClassContext& context);
-    virtual void letter_h(AppClassContext& context);
-    virtual void letter_i(AppClassContext& context);
-    virtual void letter_j(AppClassContext& context);
-    virtual void letter_k(AppClassContext& context);
-    virtual void letter_l(AppClassContext& context);
+    virtual void letter_colon(AppClassContext& context, char& ch);
+    virtual void letter_equals(AppClassContext& context, char& ch);
     virtual void letter_point(AppClassContext& context);
-    virtual void letter_question(AppClassContext& context);
-    virtual void letter_t(AppClassContext& context);
-    virtual void other(AppClassContext& context);
+    virtual void letter_question(AppClassContext& context, char& ch);
 };
 
 class AppClassContext :
@@ -588,59 +312,19 @@ public:
         getState().a_zAND0_9(*this, ch);
     };
 
-    inline void letter_a()
-    {
-        getState().letter_a(*this);
-    };
-
     inline void letter_at()
     {
         getState().letter_at(*this);
     };
 
-    inline void letter_c()
+    inline void letter_colon(char& ch)
     {
-        getState().letter_c(*this);
+        getState().letter_colon(*this, ch);
     };
 
-    inline void letter_colon()
+    inline void letter_equals(char& ch)
     {
-        getState().letter_colon(*this);
-    };
-
-    inline void letter_d()
-    {
-        getState().letter_d(*this);
-    };
-
-    inline void letter_equals()
-    {
-        getState().letter_equals(*this);
-    };
-
-    inline void letter_h()
-    {
-        getState().letter_h(*this);
-    };
-
-    inline void letter_i()
-    {
-        getState().letter_i(*this);
-    };
-
-    inline void letter_j()
-    {
-        getState().letter_j(*this);
-    };
-
-    inline void letter_k()
-    {
-        getState().letter_k(*this);
-    };
-
-    inline void letter_l()
-    {
-        getState().letter_l(*this);
+        getState().letter_equals(*this, ch);
     };
 
     inline void letter_point()
@@ -648,19 +332,14 @@ public:
         getState().letter_point(*this);
     };
 
-    inline void letter_question()
+    inline void letter_question(char& ch)
     {
-        getState().letter_question(*this);
+        getState().letter_question(*this, ch);
     };
 
     inline void letter_space()
     {
         getState().letter_space(*this);
-    };
-
-    inline void letter_t()
-    {
-        getState().letter_t(*this);
     };
 
     inline void letter_tab()
