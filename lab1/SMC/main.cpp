@@ -5,6 +5,7 @@
 #include <map>
 #include <ctime>
 #include "AppClass.h"
+#include "Server.h"
 
 using namespace statemap;
 
@@ -13,10 +14,10 @@ void from_keyboard(size_t type_output);
 void from_file(size_t type_output);
 std::string get_output_filename();
 void proceed(std::string& str, std::ostream& out, AppClass& thisContext, std::map<std::string, size_t>& server_map);
+void timing();
 
 int main()
 {
-    
     if (const auto type_input{ get_type("Input from keyboard or from file?")}, type_output{ get_type("Output on keyboard or in file ?") }; type_input == 1)
         from_keyboard(type_output);
     else if (type_input == 2)
@@ -71,7 +72,6 @@ void from_keyboard(size_t type_output)
 
     std::map<std::string, size_t> server_map = {};
 
-    unsigned int start_time = clock();
     AppClass thisContext;
     for (size_t i = 0; i < count; i++) {
         std::cout << "Enter string: ";
@@ -80,8 +80,6 @@ void from_keyboard(size_t type_output)
         proceed(str, *out, thisContext, server_map);
         std::cout << std::endl;
     }
-    unsigned int end_time = clock();
-    std::cout << "Time: " << end_time - start_time << std::endl;
 
     *out << std::endl;
     for (auto& [key, value] : server_map) {
@@ -116,14 +114,9 @@ void from_file(size_t type_output)
     std::map<std::string, size_t> server_map;
 
     AppClass thisContext;
-    unsigned int sum_time = 0;
     while (getline(fin, str)) {
-        unsigned int start_time = clock();
         proceed(str, *out, thisContext, server_map);
-        unsigned int end_time = clock();
-        sum_time += end_time - start_time;
     }
-    std::cout << "Time: " << sum_time << std::endl;
 
     *out << std::endl;
     for (auto& [key, value] : server_map)
@@ -148,10 +141,22 @@ void proceed(std::string& str, std::ostream& out, AppClass& thisContext, std::ma
     out << "The string \"" << str << "\" is ";
     try
     {
-        if (thisContext.CheckString(str, server_map) == false)
+        if (thisContext.CheckString(str) == false)
             out << "not acceptable" << std::endl;
-        else
+        else {
             out << "acceptable" << std::endl;
+            bool isAdd = false;
+            for (auto& [key, value] : server_map) {
+                if (key == thisContext.getServer().getStr()) {
+                    value++;
+                    isAdd = true;
+                    break;
+                }
+            }
+
+            if (!isAdd)
+                server_map.emplace(thisContext.getServer().getStr(), 1);
+        }
     }
     catch (const SmcException& smcex)
     {
@@ -160,4 +165,32 @@ void proceed(std::string& str, std::ostream& out, AppClass& thisContext, std::ma
             << '.'
             << std::endl;
     }
+}
+
+void timing()
+{
+    std::cout << "Enter input file name: ";
+    std::string file;
+    std::cin >> file;
+    std::ifstream fin(file);
+
+    while (!fin.is_open())
+    {
+        std::cout << "This file doesn't exist. Try again: ";
+        std::cin >> file;
+        fin.open(file);
+    }
+
+    std::cout << std::endl;
+
+    std::string str;
+    AppClass thisContext;
+    unsigned int sum_time = 0;
+    while (getline(fin, str)) {
+        unsigned int start_time = clock();
+        thisContext.CheckString(str);
+        unsigned int end_time = clock();
+        sum_time += end_time - start_time;
+    }
+    std::cout << "Time: " << sum_time << std::endl;
 }

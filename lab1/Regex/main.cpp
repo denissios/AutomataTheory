@@ -12,7 +12,8 @@ void from_keyboard(size_t type_output);
 void from_file(size_t type_output);
 std::string get_output_filename();
 void proceed(std::string& str, std::ostream& out, std::map<std::string, size_t>& server_map);
-bool check_string(std::string& str, std::map<std::string, size_t>& server_map);
+bool check_string(std::string& str, std::map<std::string, size_t>& server_map, unsigned int& sum_time);
+void timing();
 
 int main()
 {
@@ -70,7 +71,6 @@ void from_keyboard(size_t type_output)
 
     std::map<std::string, size_t> server_map = {};
 
-    unsigned int start_time = clock();
     for (size_t i = 0; i < count; i++) {
         std::cout << "Enter string: ";
         std::string str;
@@ -78,8 +78,6 @@ void from_keyboard(size_t type_output)
         proceed(str, *out, server_map);
         std::cout << std::endl;
     }
-    unsigned int end_time = clock();
-    std::cout << "Time: " << end_time - start_time << std::endl;
 
     *out << std::endl;
     for (auto& [key, value] : server_map) {
@@ -113,14 +111,10 @@ void from_file(size_t type_output)
     std::string str;
     std::map<std::string, size_t> server_map;
 
-    unsigned int sum_time = 0;
     while (getline(fin, str)) {
-        unsigned int start_time = clock();
         proceed(str, *out, server_map);
-        unsigned int end_time = clock();
-        sum_time += end_time - start_time;
     }
-    std::cout << "Time: " << sum_time << std::endl;
+
 
     *out << std::endl;
     for (auto& [key, value] : server_map)
@@ -142,16 +136,18 @@ std::string get_output_filename()
 
 void proceed(std::string& str, std::ostream& out, std::map<std::string, size_t>& server_map)
 {
+    unsigned int sum_time;
     out << "The string \"" << str << "\" is ";
 
-    if (check_string(str, server_map))
+    if (check_string(str, server_map, sum_time))
         out << "acceptable" << std::endl;
     else
         out << "not acceptable" << std::endl;
 }
 
-bool check_string(std::string& str, std::map<std::string, size_t>& server_map)
+bool check_string(std::string& str, std::map<std::string, size_t>& server_map, unsigned int& sum_time)
 {
+    unsigned int start_time = clock();
     std::cmatch result;
     std::regex regular("gtalk"
                        ":"
@@ -166,6 +162,8 @@ bool check_string(std::string& str, std::map<std::string, size_t>& server_map)
                        "[a-zA-Z]{1,4}", std::regex_constants::icase);
 
     if (std::regex_match(str.c_str(), result, regular)) {
+        unsigned int end_time = clock();
+        sum_time += end_time - start_time;
         bool isAdd = false;
         for (auto& [key, value] : server_map) {
             if (key == result[2]) {
@@ -180,6 +178,33 @@ bool check_string(std::string& str, std::map<std::string, size_t>& server_map)
 
         return true;
     }
+    unsigned int end_time = clock();
+    sum_time += end_time - start_time;
 
     return false;
+}
+
+void timing()
+{
+    std::cout << "Enter input file name: ";
+    std::string file;
+    std::cin >> file;
+    std::ifstream fin(file);
+
+    while (!fin.is_open())
+    {
+        std::cout << "This file doesn't exist. Try again: ";
+        std::cin >> file;
+        fin.open(file);
+    }
+
+    std::cout << std::endl;
+    std::string str;
+    std::map<std::string, size_t> server_map;
+
+    unsigned int sum_time = 0;
+    while (getline(fin, str)) {
+        check_string(str, server_map, sum_time);
+    }
+    std::cout << "Time: " << sum_time << std::endl;
 }

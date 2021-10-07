@@ -11,6 +11,7 @@ void from_keyboard(size_t type_output);
 void from_file(size_t type_output);
 std::string get_output_filename();
 void proceed(yyFlexLexer& ftp, std::ostream& out, std::map<std::string, size_t>& server_map);
+void timing();
 
 int main()
 {
@@ -86,20 +87,14 @@ void from_file(size_t type_output)
         fout.open(get_output_filename());
         out = &fout;
     }
-
     std::cout << std::endl;
-    std::string str;
+
     std::map<std::string, size_t> server_map;
 
     yyFlexLexer ftp(&fin);
-    unsigned int sum_time = 0;
     while (!fin.eof()) {
-        unsigned int start_time = clock();
         proceed(ftp, *out, server_map);
-        unsigned int end_time = clock();
-        sum_time += end_time - start_time;
     }
-    std::cout << "Time: " << sum_time << std::endl;
 
     *out << std::endl;
     for (auto& [key, value] : server_map)
@@ -138,4 +133,35 @@ void proceed(yyFlexLexer& ftp, std::ostream& out, std::map<std::string, size_t>&
     }
     else
         out << "not acceptable" << std::endl;
+}
+
+void timing()
+{
+    std::cout << "Enter input file name: ";
+    std::string file;
+    std::cin >> file;
+    std::ifstream fin(file);
+
+    while (!fin.is_open())
+    {
+        std::cout << "This file doesn't exist. Try again: ";
+        std::cin >> file;
+        fin.open(file);
+    }
+
+    std::cout << std::endl;
+
+    std::stringstream ss = {};
+    
+    while (!fin.eof()) {
+        std::string str;
+        getline(fin, str);
+        ss << str;
+    }
+
+    yyFlexLexer ftp(&ss);
+    unsigned int start_time = clock();
+    ftp.yylex();
+    unsigned int end_time = clock();
+    std::cout << "Time: " << end_time - start_time << std::endl;
 }

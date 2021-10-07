@@ -28,7 +28,7 @@ void AppClass::reset()
     bs.reset();
 }
 
-bool AppClass::CheckString(std::string theString, std::map<std::string, size_t>& server_map)
+bool AppClass::CheckString(std::string theString)
 {
 #ifdef CRTP
 #else
@@ -86,20 +86,6 @@ bool AppClass::CheckString(std::string theString, std::map<std::string, size_t>&
     // end of string has been reached - send the EOS transition.
     _fsm.EOS();
 #endif
-
-    if (isAcceptable) {
-        bool isAdd = false;
-        for (auto& [key, value] : server_map) {
-            if (key == server.getStr()) {
-                value++;
-                isAdd = true;
-                break;
-            }
-        }
-
-        if(!isAdd)
-            server_map.emplace(server.getStr(), 1);
-    }
 
     return isAcceptable;
 }
