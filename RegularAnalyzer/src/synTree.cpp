@@ -1,14 +1,20 @@
 #include "synTree.hpp"
 
+void SynTree::process(std::string str)
+{
+	regular = str;
+	process();
+}
+
 void SynTree::process()
 {
 	if (regular == "") {
+		throw "Error! Empty Regular expression!";
 		return;
 	}
-
 	
-	regular.insert(0, "(");
-	regular += "&)";
+	regular.insert(0, "((");
+	regular += ")&)";
 	for (size_t i = 0; i < regular.size(); i++) { // search '(' and ')'
 		if (regular[i] == '(') {
 			size_t j = i, count_pound = 0;
@@ -28,13 +34,13 @@ void SynTree::process()
 			}
 			if (count_pound % 2 == 0) {
 				if (left_brackets.empty()) {
-					throw "Invalid '(' or ')'";
+					throw "Error! Invalid '(' or ')'";
 					return;
 				}
 				right_brackets.push_back(i);
 				bracketHandler(left_brackets[left_brackets.size() - 1], i);
-
 				regular.erase(regular.begin() + left_brackets[left_brackets.size() - 1] + 1, regular.begin() + i + 1);
+				
 				right_brackets[right_brackets.size() - 1] -= (i - left_brackets[left_brackets.size() - 1]);
 				i -= (i - left_brackets[left_brackets.size() - 1]);
 				left_brackets.erase(left_brackets.end() - 1);
@@ -42,7 +48,7 @@ void SynTree::process()
 		}
 	}
 	if (!left_brackets.empty()) {
-		throw "Invalid '(' or ')'";
+		throw "Error! Invalid '(' or ')'";
 		return;
 	}
 
@@ -51,12 +57,16 @@ void SynTree::process()
 
 void SynTree::bracketHandler(size_t first, size_t last)
 {
+	if (last - first == 1) {
+		throw "Error! Invalid ()";
+		return;
+	}
 	createNodes(first, last);
 	getFLErrors();
 
-	nodes.erase(std::remove_if(nodes.begin(), nodes.end(), [](const std::shared_ptr<Node>& node) { return (node->c == '#' && node->escaping == false); }), nodes.end());  // delete all not escaping '#'
+	nodes.erase(std::remove_if(nodes.begin(), nodes.end(), [](const std::shared_ptr<Node>& node) { return (node->c == '#' && node->is_escaping == false); }), nodes.end());  // delete all not is_escaping '#'
 
-	std::string str_capture = {};
+	std::string str_capture;
 	bool capture_flag = false;
 	captureHandler(str_capture, capture_flag, first);
 
@@ -67,7 +77,7 @@ void SynTree::bracketHandler(size_t first, size_t last)
 	if (capture_flag) {
 		for (auto& [key, value] : capture) {
 			if (key == std::stoi(str_capture)) {
-				throw "Number of capture repeated more than once";
+				throw "Error! Number of capture repeated more than once";
 				return;
 			}
 		}
@@ -96,17 +106,18 @@ void SynTree::createNodes(size_t first, size_t last)
 
 void SynTree::captureHandler(std::string& str_capture, bool& capture_flag, size_t& first)
 {
+	std::vector<std::pair<size_t, bool>> captures_and_conc;
 	bool true_capture_flag = true;
 	size_t count_capture = 0;
 	for (size_t i = num_of_brackets_in_nodes; i < nodes.size(); i++) {  // search "n:"
-		if (nodes[i]->c == ':' && !nodes[i]->escaping && capture_flag) {  // invalid ":"
-			throw "Invalid ':'";
+		if (nodes[i]->c == ':' && !nodes[i]->is_escaping && capture_flag) {  // invalid ":"
+			throw "Error! Invalid ':'";
 			return;
 		}
 
-		if (nodes[i]->c == ':' && !nodes[i]->escaping) {
+		if (nodes[i]->c == ':' && !nodes[i]->is_escaping) {
 			if (!true_capture_flag || str_capture == "") {
-				throw "Invalid capture n:";
+				throw "Error! Invalid capture n:";
 				return;
 			}
 			capture_flag = true;
@@ -115,7 +126,7 @@ void SynTree::captureHandler(std::string& str_capture, bool& capture_flag, size_
 		if ((nodes[i]->c > '9' || nodes[i]->c < '0') && !capture_flag)
 			true_capture_flag = false;
 
-		if (nodes[i]->c == '(' && !nodes[i]->escaping && !nodes[i]->is_root_subtree) {
+		if (nodes[i]->c == '(' && !nodes[i]->is_escaping && !nodes[i]->is_root_subtree) {
 			for (size_t j = 0; j < right_brackets.size(); j++) {
 				if (first < right_brackets[j]) {
 					nodes[i] = nodes[j];
@@ -133,8 +144,24 @@ void SynTree::captureHandler(std::string& str_capture, bool& capture_flag, size_
 			count_capture++;
 			str_capture += nodes[i]->c;
 		}
+		else {
+			nodes[i]->num_capture = std::stoi(str_capture);
+			nodes[i]->capture_mode = 1;
+		}
 
-		if (nodes[i]->c == '\\' && !nodes[i]->escaping) { // search "\n"
+		for (auto& [key, value] : capture) {
+			if (value == nodes[i]) {
+				captures_and_conc.push_back(std::make_pair(key, false));
+			}
+		}
+
+		if (nodes[i]->c == '|' && !nodes[i]->is_escaping && !nodes[i]->is_root_subtree) {
+			for (size_t j = 0; j < captures_and_conc.size(); j++) {
+				captures_and_conc[j].second = true;
+			}
+		}
+
+		if (nodes[i]->c == '\\' && !nodes[i]->is_escaping) { // search "\n"
 			size_t j = i + 1, count = 0;
 			std::string str_num_capture = {};
 			while (j < nodes.size() && nodes[j]->c > '0' && nodes[j]->c < '9') {
@@ -143,7 +170,7 @@ void SynTree::captureHandler(std::string& str_capture, bool& capture_flag, size_
 				count++;
 			}
 			if (j == i + 1) {
-				throw "Invalid capture \\n";
+				throw "Error! Invalid capture \\n";
 				return;
 			}
 			bool is_exist_capture = false;
@@ -155,9 +182,17 @@ void SynTree::captureHandler(std::string& str_capture, bool& capture_flag, size_
 				}
 			}
 			if (!is_exist_capture) {
-				throw "Number of capture doesn't exist";
+				throw "Error! Number of capture doesn't exist";
 				return;
 			}
+			for (size_t j = 0; j < captures_and_conc.size(); j++) {
+				if (std::stoi(str_num_capture) == captures_and_conc[j].first && captures_and_conc[j].second) {
+					throw "Error! '|' between n: and \\n with equals n";
+				}
+			}
+			nodes[i]->capture_repeat = std::stoi(str_num_capture);
+			nodes[i]->capture_mode = 2;
+			getModeTwoLower(nodes[i], std::stoi(str_num_capture));
 			nodes.erase(nodes.begin() + i + 1, nodes.begin() + i + count + 1);
 		}
 
@@ -166,16 +201,32 @@ void SynTree::captureHandler(std::string& str_capture, bool& capture_flag, size_
 	}
 }
 
+void SynTree::getModeTwoLower(std::shared_ptr<Node> m_node, int num_capture)
+{
+	if (!m_node) {
+		return;
+	}
+	getModeTwoLower(m_node->left, num_capture);
+	getModeTwoLower(m_node->right, num_capture);
+
+	m_node->capture_repeat = num_capture;
+	m_node->capture_mode = 2;
+}
+
 void SynTree::rangeHandler()
 {
 	for (size_t i = num_of_brackets_in_nodes; i < nodes.size(); i++) {
-		if (nodes[i]->c == '{' && !nodes[i]->escaping) {  // search '{'
+		if (nodes[i]->c == '}' && !nodes[i]->is_escaping) {
+			throw "Error! Can't find '{'";
+			return;
+		}
+		if (nodes[i]->c == '{' && !nodes[i]->is_escaping) {  // search '{'
 			if (i == num_of_brackets_in_nodes) {
-				throw "Nothing before '{'";
+				throw "Error! Nothing before '{'";
 				return;
 			}
-			if (i > num_of_brackets_in_nodes && checkMeta(nodes[i - 1]->c, 0) && !nodes[i - 1]->escaping && !nodes[i - 1]->is_root_subtree) {
-				throw "Invalid '|' or '.' before '{'";
+			if (i > num_of_brackets_in_nodes && checkMeta(nodes[i - 1]->c, 0) && !nodes[i - 1]->is_escaping && !nodes[i - 1]->is_root_subtree) {
+				throw "Error! Invalid '|' or '.' before '{'";
 				return;
 			}
 			nodes.erase(nodes.begin() + i);
@@ -183,18 +234,19 @@ void SynTree::rangeHandler()
 			size_t j = i, count = 0, x = 0, y = 0;
 			bool coma_flag = false;
 			while (true) {
-				if (j == nodes.size() - 1 && !(nodes[j]->c == '}' && !nodes[j]->escaping && !nodes[j]->is_root_subtree)) {
-					throw "Can't find '}'";
+				if (j == nodes.size() - 1 && !(nodes[j]->c == '}' && !nodes[j]->is_escaping && !nodes[j]->is_root_subtree)) {
+					throw "Error! Can't find '}'";
 					return;
 				}
 				count++;
-				if (nodes[j]->c == ',' && !nodes[j]->escaping && !nodes[j]->is_root_subtree) {
+				if (nodes[j]->c == ',' && !nodes[j]->is_escaping && !nodes[j]->is_root_subtree) {
 					coma_flag = true;
 					if (nodes[j + 1]->c == '}') {
 						count++;
 						nodes.erase(nodes.begin() + i, nodes.begin() + i + count);
 						x = std::stoi(str);
 						oneNumRangeHandler(x, i);
+						i--;
 						break;
 					}
 					else {
@@ -205,19 +257,20 @@ void SynTree::rangeHandler()
 					}
 				}
 
-				if (nodes[j]->c == '}' && !nodes[j]->escaping && !nodes[j]->is_root_subtree) {
+				if (nodes[j]->c == '}' && !nodes[j]->is_escaping && !nodes[j]->is_root_subtree) {
 					if (!coma_flag || x > std::stoi(str)) {
-						throw "Invalid range {}";
+						throw "Error! Invalid range {}";
 						return;
 					}
 					y = std::stoi(str);
 					nodes.erase(nodes.begin() + i, nodes.begin() + i + count);
 					twoNumRangeHandler(x, y, i);
+					i--;
 					break;
 				}
 
 				if (nodes[j]->c > '9' || nodes[j]->c < '0') {
-					throw "Invalid range {}";
+					throw "Error! Invalid range {}";
 					return;
 				}
 
@@ -225,14 +278,10 @@ void SynTree::rangeHandler()
 				j++;
 			}
 		}
-		if (nodes[i]->c == '}') {
-			throw "Can't find '{'";
-			return;
-		}
 
-		if (nodes[i]->c == '+' && !nodes[i]->escaping && !nodes[i]->is_root_subtree) {  // search '+'
-			if (i > num_of_brackets_in_nodes && checkMeta(nodes[i - 1]->c, 0) && !nodes[i - 1]->escaping && !nodes[i - 1]->is_root_subtree) {
-				throw "Invalid '|' or '.' before '+'";
+		if (nodes[i]->c == '+' && !nodes[i]->is_escaping && !nodes[i]->is_root_subtree) {  // search '+'
+			if (i > num_of_brackets_in_nodes && checkMeta(nodes[i - 1]->c, 0) && !nodes[i - 1]->is_escaping && !nodes[i - 1]->is_root_subtree) {
+				throw "Error! Invalid '|' or '.' before '+'";
 				return;
 			}
 			nodes[i]->left = nodes[i - 1];
@@ -295,6 +344,12 @@ void SynTree::twoNumRangeHandler(size_t& x, size_t& y, size_t& i)
 		return;
 	}
 
+	bool is_null_x = false;
+	if (!x) {
+		x++;
+		is_null_x = true;
+	}
+
 	std::shared_ptr<Node> tmp = copyTree(nodes[i - 1], nullptr);
 	for (size_t z = 0; z <= y - x; z++) {
 		for (size_t k = 0; k < x + z; k++) {
@@ -327,13 +382,24 @@ void SynTree::twoNumRangeHandler(size_t& x, size_t& y, size_t& i)
 			nodes.erase(nodes.begin() + i);
 		}
 	}
+	if (is_null_x) {
+		nodes.insert(nodes.begin() + i, std::make_shared<Node>('^', false, true));
+		nodes.insert(nodes.begin() + i, std::make_shared<Node>('|', false, true));
+		nodes[i]->left = nodes[i - 1];
+		nodes[i]->right = nodes[i + 1];
+		nodes[i]->is_root_subtree = true;
+		nodes[i - 1]->parent = nodes[i];
+		nodes[i + 1]->parent = nodes[i];
+		nodes.erase(nodes.begin() + i + 1);
+		nodes.erase(nodes.begin() + i - 1);
+	}
 }
 
 void SynTree::concatinationHandler()
 {
 	for (size_t i = num_of_brackets_in_nodes + 1; i < nodes.size(); i++) {  // search concatination
 		getErrors(i);
-		if (nodes[i]->c == '.' && !nodes[i]->escaping && !nodes[i]->is_root_subtree) {
+		if (nodes[i]->c == '.' && !nodes[i]->is_escaping && !nodes[i]->is_root_subtree) {
 			nodes[i]->left = nodes[i - 1];
 			nodes[i]->right = nodes[i + 1];
 			nodes[i]->is_root_subtree = true;
@@ -343,8 +409,8 @@ void SynTree::concatinationHandler()
 			nodes.erase(nodes.begin() + i);
 			i--;
 		}
-		else if ((nodes[i]->c != '|') || (nodes[i]->c == '|' && nodes[i]->escaping) || (nodes[i]->c == '|' && nodes[i]->is_root_subtree)) {
-			if (nodes[i - 1]->c == '|' && !nodes[i - 1]->escaping && !nodes[i - 1]->is_root_subtree)
+		else if ((nodes[i]->c != '|') || (nodes[i]->c == '|' && nodes[i]->is_escaping) || (nodes[i]->c == '|' && nodes[i]->is_root_subtree)) {
+			if (nodes[i - 1]->c == '|' && !nodes[i - 1]->is_escaping && !nodes[i - 1]->is_root_subtree)
 				continue;
 
 			nodes.insert(nodes.begin() + i, std::make_shared<Node>('.', false));
@@ -363,7 +429,7 @@ void SynTree::concatinationHandler()
 void SynTree::orHandler()
 {
 	for (size_t i = num_of_brackets_in_nodes; i < nodes.size(); i++) {  // search '|'
-		if (nodes[i]->c == '|' && !nodes[i]->escaping && !nodes[i]->is_root_subtree) {
+		if (nodes[i]->c == '|' && !nodes[i]->is_escaping && !nodes[i]->is_root_subtree) {
 			nodes[i]->left = nodes[i - 1];
 			nodes[i]->right = nodes[i + 1];
 			nodes[i]->is_root_subtree = true;
@@ -381,7 +447,7 @@ std::shared_ptr<SynTree::Node> SynTree::copyTree(std::shared_ptr<Node> tree_c, s
 	if (!tree_c)
 		return nullptr;
 
-	auto new_node = std::make_shared<Node>(tree_c->c, tree_c->escaping, tree_c->is_root_subtree);
+	auto new_node = std::make_shared<Node>(tree_c->c, tree_c->is_escaping, tree_c->is_root_subtree);
 	new_node->parent = cur_parent;
 	new_node->left = copyTree(tree_c->left, new_node);
 	new_node->right = copyTree(tree_c->right, new_node);
@@ -391,17 +457,17 @@ std::shared_ptr<SynTree::Node> SynTree::copyTree(std::shared_ptr<Node> tree_c, s
 
 void SynTree::getErrors(const size_t idx)
 {
-	if (idx < nodes.size() - 1 && checkMeta(nodes[idx + 1]->c, 0) && !nodes[idx + 1]->escaping && !nodes[idx + 1]->is_root_subtree && checkMeta(nodes[idx]->c, 0) && !nodes[idx]->escaping && !nodes[idx]->is_root_subtree) {
-		throw "Invalid '|' or '.' or '+'";
+	if (idx < nodes.size() - 1 && checkMeta(nodes[idx + 1]->c, 0) && !nodes[idx + 1]->is_escaping && !nodes[idx + 1]->is_root_subtree && checkMeta(nodes[idx]->c, 0) && !nodes[idx]->is_escaping && !nodes[idx]->is_root_subtree) {
+		throw "Error! Invalid '|' or '.' or '+'";
 		return;
 	}
 }
 
 void SynTree::getFLErrors()
 {
-	if (checkMeta(nodes[num_of_brackets_in_nodes]->c, 0) && !nodes[num_of_brackets_in_nodes]->escaping && !nodes[num_of_brackets_in_nodes]->is_root_subtree ||
-		checkMeta(nodes[nodes.size() - 1]->c, 1) && !nodes[nodes.size() - 1]->escaping && !nodes[nodes.size() - 1]->is_root_subtree) {
-		throw "Invalid '|' or '.' or '+'";
+	if (checkMeta(nodes[num_of_brackets_in_nodes]->c, 0) && !nodes[num_of_brackets_in_nodes]->is_escaping && !nodes[num_of_brackets_in_nodes]->is_root_subtree ||
+		checkMeta(nodes[nodes.size() - 1]->c, 1) && !nodes[nodes.size() - 1]->is_escaping && !nodes[nodes.size() - 1]->is_root_subtree) {
+		throw "Error! Invalid '|' or '.' or '+'";
 		return;
 	}
 }
@@ -418,7 +484,7 @@ void SynTree::print()
 	printNFLTree(root, 0);
 	std::cout << std::endl << std::endl << std::endl;
 	for (auto& [key, value] : followpos) {
-		std::cout << key.first << " " << key.second << " ";
+		std::cout << key.first[0] << " " << key.second << " ";
 		std::cout << "{ ";
 		for (auto& el : value) {
 			std::cout << el << " ";
@@ -446,7 +512,7 @@ void SynTree::printNFLTree(std::shared_ptr<Node> m_node, size_t level)
 	{
 		printNFLTree(m_node->left, level + 1);
 		for (size_t i = 0; i < level; i++) std::cout << "         ";
-		std::cout << m_node->nullable << " {";
+		std::cout << m_node->is_nullable << " {";
 		for (auto& el : m_node->firstpos) {
 			std::cout << el << " ";
 		}
@@ -462,37 +528,38 @@ void SynTree::printNFLTree(std::shared_ptr<Node> m_node, size_t level)
 
 void SynTree::setNFL()
 {
-	setNFLTree(root);
+	setNFLTree(root, false);
+	setNFLTree(nullptr, true);
 }
 
-void SynTree::setNFLTree(std::shared_ptr<Node> m_node)
+void SynTree::setNFLTree(std::shared_ptr<Node> m_node, bool null_flag)
 {
-	static size_t num_symbol = 1;
+	static int num_symbol = 1;
 	if (m_node)
 	{
-		setNFLTree(m_node->left);
-		setNFLTree(m_node->right);
-		if (m_node->c == '^' && !m_node->escaping)
-			m_node->nullable = true;
-		else if (m_node->c == '.' && !m_node->escaping) {
-			m_node->nullable = m_node->left->nullable && m_node->right->nullable;
+		setNFLTree(m_node->left, false);
+		setNFLTree(m_node->right, false);
+		if (m_node->c == '^' && !m_node->is_escaping)
+			m_node->is_nullable = true;
+		else if (m_node->c == '.' && !m_node->is_escaping) {
+			m_node->is_nullable = m_node->left->is_nullable && m_node->right->is_nullable;
 
-			if (m_node->left->nullable) {
+			if (m_node->left->is_nullable) {
 				m_node->firstpos.insert(m_node->left->firstpos.begin(), m_node->left->firstpos.end());
 				m_node->firstpos.insert(m_node->right->firstpos.begin(), m_node->right->firstpos.end());
 			}
 			else
 				m_node->firstpos.insert(m_node->left->firstpos.begin(), m_node->left->firstpos.end());
 
-			if (m_node->right->nullable) {
+			if (m_node->right->is_nullable) {
 				m_node->lastpos.insert(m_node->left->lastpos.begin(), m_node->left->lastpos.end());
 				m_node->lastpos.insert(m_node->right->lastpos.begin(), m_node->right->lastpos.end());
 			}
 			else
 				m_node->lastpos.insert(m_node->right->lastpos.begin(), m_node->right->lastpos.end());
 		}
-		else if (m_node->c == '|' && !m_node->escaping) {
-			m_node->nullable = m_node->left->nullable || m_node->right->nullable;
+		else if (m_node->c == '|' && !m_node->is_escaping) {
+			m_node->is_nullable = m_node->left->is_nullable || m_node->right->is_nullable;
 
 			m_node->firstpos.insert(m_node->left->firstpos.begin(), m_node->left->firstpos.end());
 			m_node->firstpos.insert(m_node->right->firstpos.begin(), m_node->right->firstpos.end());
@@ -501,30 +568,34 @@ void SynTree::setNFLTree(std::shared_ptr<Node> m_node)
 			m_node->lastpos.insert(m_node->right->lastpos.begin(), m_node->right->lastpos.end());
 
 		}
-		else if (m_node->c == '+' && !m_node->escaping) {
-			m_node->nullable = false;
+		else if (m_node->c == '+' && !m_node->is_escaping) {
+			m_node->is_nullable = false;
 			m_node->firstpos.insert(m_node->left->firstpos.begin(), m_node->left->firstpos.end());
 			m_node->lastpos.insert(m_node->left->lastpos.begin(), m_node->left->lastpos.end());
 		}
 		else {
-			m_node->nullable = false;
+			m_node->is_nullable = false;
 			m_node->firstpos.insert(num_symbol);
 			m_node->lastpos.insert(num_symbol);
 			std::set<size_t> set = {};
-			followpos.emplace(std::make_pair(num_symbol, m_node->c), set);
+			std::vector<int> vec = { num_symbol, m_node->capture_mode, m_node->capture_repeat, m_node->num_capture };
+			followpos.emplace(std::make_pair(vec, m_node->c), set);
 			num_symbol++;
 		}
 
 		setFPTree(m_node);
 	}
+
+	if (null_flag)
+		num_symbol = 1;
 }
 
 void SynTree::setFPTree(std::shared_ptr<Node> m_node)
 {
-	if (m_node->c == '.' && !m_node->escaping) {
+	if (m_node->c == '.' && !m_node->is_escaping) {
 		for (auto& num_left : m_node->left->lastpos) {
 			for (auto& [key, value] : followpos) {
-				if (key.first == num_left) {
+				if (key.first[0] == num_left) {
 					for (auto& num_right : m_node->right->firstpos) {
 						value.insert(num_right);
 					}
@@ -532,10 +603,10 @@ void SynTree::setFPTree(std::shared_ptr<Node> m_node)
 			}
 		}
 	}
-	else if (m_node->c == '+' && !m_node->escaping) {
+	else if (m_node->c == '+' && !m_node->is_escaping) {
 		for (auto& num_left : m_node->left->lastpos) {
 			for (auto& [key, value] : followpos) {
-				if (key.first == num_left) {
+				if (key.first[0] == num_left) {
 					for (auto& num_right : m_node->left->firstpos) {
 						value.insert(num_right);
 					}
@@ -545,12 +616,19 @@ void SynTree::setFPTree(std::shared_ptr<Node> m_node)
 	}
 }
 
-//void SynTree::copyNode(size_t idx_c, size_t idx_p)
-//{
-//	nodes[idx_p]->str = nodes[idx_c]->str;
-//	nodes[idx_p]->escaping = nodes[idx_c]->escaping;
-//  nodes[idx_p]->is_root_subtree = nodes[idx_c]->is_root_subtree;
-//	nodes[idx_p]->parent = nodes[idx_c]->parent;
-//	nodes[idx_p]->left = nodes[idx_c]->left;
-//	nodes[idx_p]->right = nodes[idx_c]->right;
-//}
+void SynTree::startInversion()
+{
+	inversion(root);
+}
+
+void SynTree::inversion(std::shared_ptr<Node> m_node)
+{
+	if (m_node)
+	{
+		inversion(m_node->left);
+		inversion(m_node->right);
+		if (m_node->c == '.' && m_node != root) {
+			std::swap(m_node->left, m_node->right);
+		}
+	}
+}
