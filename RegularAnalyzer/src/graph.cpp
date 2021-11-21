@@ -466,7 +466,9 @@ void Graph::findAll(std::string& str, std::vector<std::string>& strings, std::ve
 				equal = true;
 
 				if (value.second->is_finite && i == str.size() - 1) {
-					strings.push_back(current_string);
+					if (current_string != "") {
+						strings.push_back(current_string);
+					}
 					for (size_t z = 0; z < captures.size(); z++) {
 						capture.push_back(captures[z]);
 					}
@@ -498,7 +500,9 @@ void Graph::findAll(std::string& str, std::vector<std::string>& strings, std::ve
 			for (size_t z = 0; z < captures.size(); z++) {
 				capture.push_back(captures[z]);
 			}
-			strings.push_back(current_string);
+			if (current_string != "") {
+				strings.push_back(current_string);
+			}
 			if (i == index) i++;
 			findAll(str, strings, capture, i);
 			return;

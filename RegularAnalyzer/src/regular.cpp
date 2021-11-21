@@ -67,8 +67,8 @@ void Regular::subtraction(Regular& regular1, Regular& regular2)
 	}
 
 	graph.multiple_for_sub(regular1.graph, regular2.graph);
-	//std::cout << std::endl << "===============SUBTRACTION===============" << std::endl << std::endl;
-	//graph.print();
+	std::cout << std::endl << "===============SUBTRACTION===============" << std::endl << std::endl;
+	graph.print();
 
 	is_compile = true;
 }

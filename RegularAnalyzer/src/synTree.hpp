@@ -57,7 +57,8 @@ private:
 	void setNFLTree(std::shared_ptr<Node> m_node, bool null_flag);
 	void setFPTree(std::shared_ptr<Node> m_node);
 	void inversion(std::shared_ptr<Node> m_node);
-	void getModeTwoLower(std::shared_ptr<Node> m_node, int num_capture);
+	void getModeTwoLower(std::shared_ptr<Node> m_node, int num_capture, int capture_mode);
+	void isExistCapture(std::shared_ptr<Node> m_node, int num_capture);
 	//void copyNode(size_t idx_c, size_t idx_p);
 
 	const std::array<char, 3> META = { '|', '.', '+' };

@@ -147,6 +147,10 @@ void SynTree::captureHandler(std::string& str_capture, bool& capture_flag, size_
 		else {
 			nodes[i]->num_capture = std::stoi(str_capture);
 			nodes[i]->capture_mode = 1;
+			if (nodes[i]->is_root_subtree) {
+				isExistCapture(nodes[i], std::stoi(str_capture));
+				getModeTwoLower(nodes[i], std::stoi(str_capture), 1);
+			}
 		}
 
 		for (auto& [key, value] : capture) {
@@ -192,8 +196,12 @@ void SynTree::captureHandler(std::string& str_capture, bool& capture_flag, size_
 			}
 			nodes[i]->capture_repeat = std::stoi(str_num_capture);
 			nodes[i]->capture_mode = 2;
-			getModeTwoLower(nodes[i], std::stoi(str_num_capture));
+			getModeTwoLower(nodes[i], std::stoi(str_num_capture), 2);
 			nodes.erase(nodes.begin() + i + 1, nodes.begin() + i + count + 1);
+		}
+
+		if (i == nodes.size() - 1 && !capture_flag) {
+			true_capture_flag = false;
 		}
 
 		if (i == nodes.size() - 1 && true_capture_flag)
@@ -201,16 +209,30 @@ void SynTree::captureHandler(std::string& str_capture, bool& capture_flag, size_
 	}
 }
 
-void SynTree::getModeTwoLower(std::shared_ptr<Node> m_node, int num_capture)
+void SynTree::getModeTwoLower(std::shared_ptr<Node> m_node, int num_capture, int capture_mode)
 {
 	if (!m_node) {
 		return;
 	}
-	getModeTwoLower(m_node->left, num_capture);
-	getModeTwoLower(m_node->right, num_capture);
+	getModeTwoLower(m_node->left, num_capture, capture_mode);
+	getModeTwoLower(m_node->right, num_capture, capture_mode);
 
 	m_node->capture_repeat = num_capture;
-	m_node->capture_mode = 2;
+	m_node->capture_mode = capture_mode;
+	m_node->num_capture = num_capture;
+}
+
+void SynTree::isExistCapture(std::shared_ptr<Node> m_node, int num_capture)
+{
+	if (!m_node) {
+		return;
+	}
+	isExistCapture(m_node->left, num_capture);
+	isExistCapture(m_node->right, num_capture);
+
+	if (m_node->num_capture != -1 && m_node->num_capture != num_capture) {
+		throw "Error! One capture in another capture";
+	}
 }
 
 void SynTree::rangeHandler()
